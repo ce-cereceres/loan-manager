@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <form id="borrower-form">
+        <label for="name">Name</label>
+        <input type="text" name="name" id="name"><br>
+
+        <label for="last-name">Last Name</label>
+        <input type="text" name="last-name" id="last-name"><br>
+
+        <label for="ine">INE</label>
+        <input type="text" name="ine" id="ine"><br>
+
+        <button type="submit">Create</button>
+    </form>
+
+    <script>
+        const borrowerForm = document.querySelector('#borrower-form');
+        const nameBorrower = document.querySelector('#name');
+        const lastName = document.querySelector('#last-name');
+        const ine = document.querySelector('#ine');
+
+        
+
+        borrowerForm.addEventListener('submit', (event) => {
+            event.preventDefault();
+
+            let borrowerDetails = [nameBorrower.value, lastName.value, ine.value];
+            
+
+            window.database.createBorrower(borrowerDetails);
+            // Redirect to Borrower Window
+            window.api.openBorrowerWindow();
+        })
+    </script>
+</body>
+</html>
