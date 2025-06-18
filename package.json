@@ -1,0 +1,27 @@
+{
+  "name": "loan-manager",
+  "version": "1.0.0",
+  "description": "Electron app to manage loans",
+  "homepage": "https://github.com/ce-cereceres/loan-manager#readme",
+  "bugs": {
+    "url": "https://github.com/ce-cereceres/loan-manager/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ce-cereceres/loan-manager.git"
+  },
+  "license": "ISC",
+  "author": "Carlos Cereceres",
+  "type": "commonjs",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "devDependencies": {
+    "electron": "^36.4.0"
+  },
+  "dependencies": {
+    "sqlite3": "^5.1.7"
+  }
+}
