@@ -131,6 +131,8 @@ window.api.sendLoanDetails((loan) => {
         }
         console.log(paymentData);
         window.database.createPayment(paymentData);
+        // After the info is updated, redirect to loans-details view
+        window.api.getLoanDetails(loan.id);
     })
 
     interestForm.addEventListener('submit', (event) => {
@@ -144,5 +146,7 @@ window.api.sendLoanDetails((loan) => {
         }
         console.log(interestData);
         window.database.createInterest(interestData);
+        // After the info is updated, redirect to loans-details view
+        window.api.getLoanDetails(loan.id);
     })
 })
