@@ -99,6 +99,10 @@ ipcMain.on('create-interest', (event, data) => {
     createInterest(data)
 })
 
+ipcMain.on('delete-interest', (event, id) => {
+    deleteInterest(id);
+})
+
 ipcMain.on('get-loan-payment', (event, id) => {
     getLoanPayment(id);
 })
@@ -375,6 +379,23 @@ const createInterest = (data) => {
         }
         console.log(`Interest successful with id = ${this.lastID}`)
     });
+}
+
+const deleteInterest = (id) => {
+    console.log(id);
+    
+    const query = `DELETE FROM interest WHERE id = ?`;
+    database.run(query, id, function(err) {
+        if (err) {
+            return console.error(err.message);
+        }
+        if (this.changes > 0) {
+            console.log(`Row(s) affected ${this.changes}`);
+            console.log(`Interest id = ${id} deleted successfuly`);
+        } else {
+            console.log(`Interest with id = ${id} not found`);
+        }
+    })
 }
 
 const getLoanPayment = (id) => {

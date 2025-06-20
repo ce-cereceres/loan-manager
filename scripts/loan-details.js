@@ -100,6 +100,8 @@ window.api.sendLoanDetails((loan) => {
             // Delete button action
             deleteButton.addEventListener('click', () => {
                 console.log(`clicked delete button with id = ${interest.id}`);
+                window.database.deleteInterest(interest.id);
+                window.api.getLoanDetails(loan.id);
                 
             });
             // Update button

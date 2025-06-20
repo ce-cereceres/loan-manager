@@ -44,5 +44,6 @@ contextBridge.exposeInMainWorld('database', {
     createPayment: (data) => ipcRenderer.send('create-payment', data),
     deletePayment: (id) => ipcRenderer.send('delete-payment', id),
     updatePayment: (data) => ipcRenderer.send('update-payment', data),
-    createInterest: (data) => ipcRenderer.send('create-interest', data)
+    createInterest: (data) => ipcRenderer.send('create-interest', data),
+    deleteInterest: (id) => ipcRenderer.send('delete-interest', id),
 })
