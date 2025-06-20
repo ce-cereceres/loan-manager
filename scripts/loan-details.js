@@ -32,6 +32,7 @@ window.api.sendLoanDetails((loan) => {
     // Get all payments to selected loan
     window.api.getLoanPayment(loan.id);
 
+    // Populate payments table
     window.api.sendPayment((payments) => {
         payments.forEach(payment => {
             console.log(payment);
@@ -48,9 +49,20 @@ window.api.sendLoanDetails((loan) => {
             // Delete button
             deleteButton.value = payment.id;
             deleteButton.textContent = `Delete id = ${payment.id}`;
+            // Delete button action
+            deleteButton.addEventListener('click', () => {
+                console.log(`clicked delete button with id = ${payment.id}`);
+                window.database.deletePayment(payment.id);
+                window.api.getLoanDetails(loan.id);
+            });
             // Update button
             updateButton.value = payment.id;
             updateButton.textContent = `Update id = ${payment.id}`;
+            // Update button action
+            updateButton.addEventListener('click', () => {
+                console.log(`clicked update button with id = ${payment.id}`);
+                window.api.openPaymentDetails(payment.id);
+            });
 
             // Appends to payment table
             paymentTableBody.appendChild(tr);
@@ -68,6 +80,7 @@ window.api.sendLoanDetails((loan) => {
     // Get all interest to selected loan
     window.api.getLoanInterest(loan.id);
 
+    // Populate interest table
     window.api.sendInterest((interests) => {
         interests.forEach(interest => {
             console.log(interest);
@@ -84,9 +97,19 @@ window.api.sendLoanDetails((loan) => {
             // Delete button
             deleteButton.value = interest.id;
             deleteButton.textContent = `Delete id = ${interest.id}`;
+            // Delete button action
+            deleteButton.addEventListener('click', () => {
+                console.log(`clicked delete button with id = ${interest.id}`);
+                
+            });
             // Update button
             updateButton.value = interest.id;
             updateButton.textContent = `Update id = ${interest.id}`;
+            // Update button action
+            updateButton.addEventListener('click', () => {
+                console.log(`clicked update button with id = ${interest.id}`);
+
+            });
 
             // Appends to interest table
             interestTableBody.appendChild(tr);

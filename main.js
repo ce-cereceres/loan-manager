@@ -83,6 +83,18 @@ ipcMain.on('create-payment', (event, data) => {
     createPayment(data);
 })
 
+ipcMain.on('open-payment-details', (event, id) => {
+    getPaymentDetails(id);
+})
+
+ipcMain.on('delete-payment', (event, id) => {
+    deletePayment(id);
+})
+
+ipcMain.on('update-payment', (event, data) => {
+    updatePayment(data);
+})
+
 ipcMain.on('create-interest', (event, data) => {
     createInterest(data)
 })
@@ -290,6 +302,63 @@ const createPayment = (data) => {
         }
         console.log(`Payment successful with id = ${this.lastID}`)
     });
+}
+
+const getPaymentDetails = (id) => {
+    const win = BrowserWindow.getFocusedWindow();
+    query = `SELECT * FROM payment WHERE id = ?`;
+    database.get(query, id, function(err, row) {
+        if (err) {
+            return console.error(err.message);
+        }
+        console.log(`Query to get payment with id = ${row.id} successfully`);
+        
+        // Load borrowers-detail view and send selected borrower details
+        win.loadFile('./views/payment-details.html').then(() => {
+            win.webContents.send('send-payment-details', row);
+        })
+    })
+}
+
+const deletePayment = (id) => {
+    console.log(id);
+    
+    const query = `DELETE FROM payment WHERE id = ?`;
+    database.run(query, id, function(err) {
+        if (err) {
+            return console.error(err.message);
+        }
+        if (this.changes > 0) {
+            console.log(`Row(s) affected ${this.changes}`);
+            console.log(`Payment id = ${id} deleted successfuly`);
+        } else {
+            console.log(`Payment with id = ${id} not found`);
+        }
+    })
+}
+
+const updatePayment = (data) => {
+    console.log(data);
+    const query = `UPDATE payment SET quantity = ?, payment_date = ? WHERE id = ?`;
+    // Create array with object "data"
+    const params = [
+        data.quantity,
+        data.payment_date,
+        data.id,
+    ]
+    
+    database.run(query, params, function(err) {
+        if (err) {
+            return console.error(err.message);
+        }
+        if (this.changes > 0) {
+            console.log(`Row(s) affected = ${this.changes}`);
+            console.log(`Payment with id = ${data.id} updated`);
+        } else {
+            console.log(`Payment with id = ${data.id} not found`);
+        }
+
+    })
 }
 
 const createInterest = (data) => {

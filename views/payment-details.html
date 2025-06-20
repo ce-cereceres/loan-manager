@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Payment</title>
+</head>
+<body>
+    <form id="payment-update-form">
+        <label for="payment-date">Date</label>
+        <input type="datetime-local" name="payment-date" id="payment-date" required>
+
+        <label for="payment-amount">Amount</label>
+        <input type="number" name="payment-amount" id="payment-amount" required>
+
+        <button type="button" id="cancel-payment-button">Cancel</button>
+        <button type="submit">Update Payment</button>
+    </form>
+
+    <script src="../scripts/payment-details.js"></script>
+</body>
+</html>

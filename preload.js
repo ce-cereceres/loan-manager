@@ -9,6 +9,7 @@ contextBridge.exposeInMainWorld('api', {
     getLoans: (id) => ipcRenderer.send('get-loans', id),
     getLoanDetails: (id) => ipcRenderer.send('get-loan-details', id),
     getLoanPayment: (id) => ipcRenderer.send('get-loan-payment', id),
+    openPaymentDetails: (id) => ipcRenderer.send('open-payment-details', id),
     getLoanInterest: (id) => ipcRenderer.send('get-loan-interest', id),
     getAllBorrowers: () => ipcRenderer.send('get-all-borrowers'),
     sendAllBorrowers: (callback) => ipcRenderer.on('send-all-borrowers', (event, args) => {
@@ -26,6 +27,9 @@ contextBridge.exposeInMainWorld('api', {
     sendPayment: (callback) => ipcRenderer.on('send-payment', (event, payments) => {
         callback(payments);
     }),
+    sendPaymentDetails: (callback) => ipcRenderer.on('send-payment-details', (event, payment) => {
+        callback(payment);
+    }),
     sendInterest: (callback) => ipcRenderer.on('send-interest', (event, interests) => {
         callback(interests);
     })
@@ -38,5 +42,7 @@ contextBridge.exposeInMainWorld('database', {
     updateBorrower: (data) => ipcRenderer.send('update-borrower', data),
     createLoan: (data) => ipcRenderer.send('create-loan', data),
     createPayment: (data) => ipcRenderer.send('create-payment', data),
+    deletePayment: (id) => ipcRenderer.send('delete-payment', id),
+    updatePayment: (data) => ipcRenderer.send('update-payment', data),
     createInterest: (data) => ipcRenderer.send('create-interest', data)
 })
