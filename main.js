@@ -96,7 +96,15 @@ ipcMain.on('update-payment', (event, data) => {
 })
 
 ipcMain.on('create-interest', (event, data) => {
-    createInterest(data)
+    createInterest(data);
+})
+
+ipcMain.on('open-interest-details', (event, id) => {
+    getInterestDetails(id);
+})
+
+ipcMain.on('update-interest', (event, data) => {
+    updateInterest(data);
 })
 
 ipcMain.on('delete-interest', (event, id) => {
@@ -379,6 +387,47 @@ const createInterest = (data) => {
         }
         console.log(`Interest successful with id = ${this.lastID}`)
     });
+}
+
+const getInterestDetails = (id) => {
+    const win = BrowserWindow.getFocusedWindow();
+    query = `SELECT * FROM interest WHERE id = ?`;
+    database.get(query, id, function(err, row) {
+        if (err) {
+            return console.error(err.message);
+        }
+        console.log(`Query to get interest with id = ${row.id} successfully`);
+        
+        // Load borrowers-detail view and send selected borrower details
+        win.loadFile('./views/interest-details.html').then(() => {
+            win.webContents.send('send-interest-details', row);
+        })
+    })
+}
+
+const updateInterest = (data) => {
+    console.log(data);
+    
+    const query = `UPDATE interest SET quantity = ?, renewal = ? WHERE id = ?`;
+    // Create array with object "data"
+    const params = [
+        data.quantity,
+        data.renewal,
+        data.id,
+    ]
+    
+    database.run(query, params, function(err) {
+        if (err) {
+            return console.error(err.message);
+        }
+        if (this.changes > 0) {
+            console.log(`Row(s) affected = ${this.changes}`);
+            console.log(`Interest with id = ${data.id} updated`);
+        } else {
+            console.log(`Interest with id = ${data.id} not found`);
+        }
+
+    })
 }
 
 const deleteInterest = (id) => {

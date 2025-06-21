@@ -110,7 +110,7 @@ window.api.sendLoanDetails((loan) => {
             // Update button action
             updateButton.addEventListener('click', () => {
                 console.log(`clicked update button with id = ${interest.id}`);
-
+                window.api.openInterestDetails(interest.id);
             });
 
             // Appends to interest table

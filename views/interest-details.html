@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Interest</title>
+</head>
+<body>
+    <form id="interest-update-form">
+        <label for="interest-date">Date</label>
+        <input type="datetime-local" name="interest-date" id="interest-date" required>
+
+        <label for="interest-amount">Amount</label>
+        <input type="number" name="interest-amount" id="interest-amount" required>
+
+        <button type="button" id="cancel-interest-button">Cancel</button>
+        <button type="submit">Update Interest</button>
+    </form>
+
+    <script src="../scripts/interest-details.js"></script>
+</body>
+</html>
