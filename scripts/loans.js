@@ -1,19 +1,19 @@
+// Selects the container in the main body of the html document
 const container = document.querySelector('.container');
+
 // "New Loan" button
 const newLoan = document.createElement("button");
 newLoan.textContent = 'New loan';
 container.appendChild(newLoan);
+// "New loan" button open the form to create a new loan
+newLoan.addEventListener('click', () => {
+    window.api.openLoanForm()
+});
 
 // Loads all borrowers on page load
 document.addEventListener('DOMContentLoaded', () => {
     window.api.getAllBorrowers();
-    
-})
-
-// "New loan" button open the form to create a new loan
-newLoan.addEventListener('click', () => {
-    window.api.openLoanForm()
-})
+});
 
 // Receives a list with all the borrowers registered to the lender
 window.api.sendAllBorrowers((borrowers) => {
@@ -33,27 +33,50 @@ window.api.sendAllBorrowers((borrowers) => {
         container.appendChild(borrowerDiv);
         borrowerDiv.appendChild(borrowerName);
     });
+});
 
-    // Receives a list with all the loans that belongs to certain borrower
-    // Function is called usign window.api.getLoans(id)
-    window.api.sendLoans((loans) => {
-        loans.forEach(loan => {
-            const loanDetails = document.createElement("p");
-            const loanDiv = document.querySelector(`#borrower-${loan.borrower_id}`);
-            const loanEditButton = document.createElement("button");
-            loanEditButton.value = loan.id;
-            loanEditButton.textContent = `Edit loan with id = ${loan.id}`;
-            loanDetails.textContent = `initial quantity = ${loan.initial_quantity} 
-            remaining quantity = ${loan.remaining_quantity} 
-            start_date = ${loan.start_date}`;
+// Receives a list with all the loans that belongs to certain borrower
+// Function is called usign window.api.getLoans(id)
+window.api.sendLoans((loans) => {
+    loans.forEach(loan => {
+        // Selects the borrower div that correspond to the respective loan
+        const loanDiv = document.querySelector(`#borrower-${loan.borrower_id}`);
 
-            loanEditButton.addEventListener('click', () => {
-                window.api.getLoanDetails(loan.id);
-            })
-            
-            loanDiv.appendChild(loanDetails);
-            loanDiv.appendChild(loanEditButton);
-            
+        // Creates a div used to display data from the loan
+        const loanDetailsDiv = document.createElement("div");
+        loanDetailsDiv.id = `loan-details-${loan.id}`;
+        loanDiv.appendChild(loanDetailsDiv);
+
+        // Loan initial amount label
+        const loanInitialAmount = document.createElement("p");
+        loanInitialAmount.innerText = `Loan Initial Amount: ${loan.initial_quantity}`;
+        loanDetailsDiv.appendChild(loanInitialAmount);
+
+        // Loan start date label
+        const loanDate = document.createElement("p");
+        loanDate.innerText = `Loan Start Date: ${loan.start_date}`;
+        loanDetailsDiv.appendChild(loanDate);
+
+        // "Edit Loan" Button
+        const loanEditButton = document.createElement("button");
+        loanEditButton.value = loan.id;
+        loanEditButton.textContent = `Edit loan with id = ${loan.id}`;
+        loanEditButton.addEventListener('click', () => {
+            window.api.getLoanDetails(loan.id);
         });
-    })
-})
+        loanDiv.appendChild(loanEditButton);
+
+        // Calls the total of the loan
+        window.api.getLoanTotalAmount(loan.id);        
+    });        
+});
+
+
+window.api.sendLoanTotalAmount((amount) => {
+    console.log(amount);
+    const loanDetailsDiv = document.querySelector(`#loan-details-${amount.id}`);
+    // Loan remaining amount
+    const loanRemainingAmount = document.createElement('p');
+    loanRemainingAmount.innerText = `Loan Remainig Amount: ${amount.total_loan}`;
+    loanDetailsDiv.appendChild(loanRemainingAmount);
+});
