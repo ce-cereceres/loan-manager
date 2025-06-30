@@ -19,20 +19,23 @@ window.api.sendLoanDetails((loan) => {
     const interestForm = document.querySelector('#interest-form');
     // "Cancel Interest" Dialog Button
     const interestCancelButton = document.querySelector('#cancel-interest-button');
-    // "Loan" id
+    // "Loan" id label
     const loanId = document.querySelector('#loan-id');
     loanId.textContent = loan.id;
-    // "Loan" amount
+    // "Loan" amount label
     const loanAmount = document.querySelector('#loan-amount');
-    loanAmount.textContent = loan.remaining_quantity;
-    // "Loan" start date
+    // "Loan" start date label
     const loanStartDate = document.querySelector('#loan-start-date');
     loanStartDate.textContent = loan.start_date;
 
-    // Get all payments to selected loan
-    window.api.getLoanPayment(loan.id);
+    // Get the loan total amount after adding the interest and subtracting payments
+    window.api.getLoanTotalAmount(loan.id);
+    window.api.sendLoanTotalAmount((loanTotalAmount) => {
+        loanAmount.textContent = loanTotalAmount.total_loan;
+    })
 
-    // Populate payments table
+    // Get all payments to selected loan and populate payment table
+    window.api.getLoanPayment(loan.id);
     window.api.sendPayment((payments) => {
         payments.forEach(payment => {
             console.log(payment);
@@ -77,10 +80,8 @@ window.api.sendLoanDetails((loan) => {
         });
     })
 
-    // Get all interest to selected loan
+    // Get all interest to selected loan and populate interest table
     window.api.getLoanInterest(loan.id);
-
-    // Populate interest table
     window.api.sendInterest((interests) => {
         interests.forEach(interest => {
             console.log(interest);
