@@ -79,6 +79,10 @@ ipcMain.on('get-loan-details', (event, id) => {
     getLoanDetails(id)
 })
 
+ipcMain.on('get-loan-total-amount', (event, id) => {
+    getLoanTotalAmount(id);
+})
+
 ipcMain.on('create-payment', (event, data) => {
     createPayment(data);
 })
@@ -300,6 +304,48 @@ const getLoanDetails = (id) => {
     });
 }
 
+const getLoanTotalAmount = (id) => {    
+    const win = BrowserWindow.getFocusedWindow();
+    query = `WITH CTE_interest AS (
+                SELECT
+                    i.loan_id,
+                    SUM(i.quantity) AS total_interest
+                FROM
+                    interest i 
+                GROUP BY
+                    i.loan_id
+            ),
+            CTE_payment AS (
+                SELECT
+                    p.loan_id,
+                    SUM(p.quantity) AS total_payment
+                FROM
+                    payment p 
+                GROUP BY
+                    p.loan_id
+            )
+            SELECT
+                l.id,
+                l.initial_quantity
+                + COALESCE(ci.total_interest, 0)
+                - COALESCE(cp.total_payment, 0) AS total_loan
+            FROM
+                loan l 
+            LEFT JOIN
+                CTE_interest AS ci ON l.id = ci.loan_id
+            LEFT JOIN
+                CTE_payment AS cp ON l.id = cp.loan_id
+            WHERE
+                l.id = ?`;
+    database.get(query, id, function(err, row) {
+        if (err) {
+            console.error(err.message);
+        }
+        console.log(row);
+        win.webContents.send('send-loan-total-amount', row);
+    });
+}
+
 const createPayment = (data) => {
     console.log(data)
     const args = [
@@ -448,6 +494,7 @@ const deleteInterest = (id) => {
 }
 
 const getLoanPayment = (id) => {
+    const win = BrowserWindow.getFocusedWindow();
     query = `SELECT * FROM payment where loan_id = ? ORDER BY payment_date ASC`;
     database.all(query, id, function(err, rows) {
         if (err) {
@@ -459,6 +506,7 @@ const getLoanPayment = (id) => {
 }
 
 const getLoanInterest = (id) => {
+    const win = BrowserWindow.getFocusedWindow();
     query = `SELECT * FROM interest where loan_id = ? ORDER BY renewal ASC`;
     database.all(query, id, function(err, rows) {
         if (err) {
