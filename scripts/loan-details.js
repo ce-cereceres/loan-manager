@@ -1,3 +1,27 @@
+import Chart from 'chart.js/auto';
+
+/**
+ * @typedef {object} Loan
+ * @property {number} id - The unique identifier for the loan
+ * @property {number} lender_id - The unique identifier for the lender
+ * @property {number} borrower_id - The unique identifier for the borrower
+ * @property {number} initial_quantity - The initial amount of the loan
+ * @property {number} remaining_quantity - The remaining amount of the loan
+ * @property {date} start_date - The date when the loan was created
+ * @property {date} finish_date - The date when the loan was finished
+ */
+
+/**
+ * @typedef {object} Transaction
+ * @property {date} transaction_date - The date when the transaction was realized
+ * @property {number} payment_final - The sum of the payment
+ * @property {number} interest_final - The sum of the interest
+ * @property {number} profit - The diference between payment and interest
+ */
+
+/**
+ * @param {Loan} loan
+ */
 window.api.sendLoanDetails((loan) => {
     // "Payment Table Body" selector
     const paymentTableBody = document.querySelector('#payment-table-body');
@@ -28,6 +52,51 @@ window.api.sendLoanDetails((loan) => {
     const loanStartDate = document.querySelector('#loan-start-date');
     loanStartDate.textContent = loan.start_date;
 
+
+    async function combinedChart() {
+        /**
+         * @type {Array<Transaction>} chartData
+         */
+        const chartData = await window.api.getChartData(loan.id);
+        console.log(chartData);
+        
+        
+        const chartCanvas = document.querySelector('#combined-chart');
+        // Chart config
+        new Chart(
+            chartCanvas,
+            {
+                type: 'bar',
+                data: {
+                    labels: chartData.map(row => row.transaction_date),
+                    datasets: [
+                        {
+                            label: 'Interest',
+                            data: chartData.map(row => row.interest_final),
+                            borderColor: '#3F8B5A',
+                            backgroundColor: '#1BE060'
+                        },
+                        {
+                            label: 'Payment',
+                            data: chartData.map(row => row.payment_final),
+                            borderColor: '#A13F3B',
+                            backgroundColor: '#E0201A'
+                        },
+                        {
+                            label: 'Profit',
+                            data: chartData.map(row => row.profit),
+                            type: 'line',
+                            borderColor: '#1B88E0',
+                            backgroundColor: '#3C5061'
+                        }
+                    ]
+                }
+            }
+        )
+    }combinedChart();
+    // USES SEND ON IPCRENDERER
+    // window.api.getChartData(loan.id);
+
     // Get the loan total amount after adding the interest and subtracting payments
     window.api.getLoanTotalAmount(loan.id);
     window.api.sendLoanTotalAmount((loanTotalAmount) => {
@@ -38,7 +107,6 @@ window.api.sendLoanDetails((loan) => {
     window.api.getLoanPayment(loan.id);
     window.api.sendPayment((payments) => {
         payments.forEach(payment => {
-            console.log(payment);
             const tr = document.createElement("tr");
             const tdDate = document.createElement("td");
             tdDate.textContent = payment.payment_date;
@@ -84,7 +152,6 @@ window.api.sendLoanDetails((loan) => {
     window.api.getLoanInterest(loan.id);
     window.api.sendInterest((interests) => {
         interests.forEach(interest => {
-            console.log(interest);
             const tr = document.createElement("tr");
             const tdDate = document.createElement("td");
             tdDate.textContent = interest.renewal;

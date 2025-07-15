@@ -125,6 +125,56 @@ ipcMain.on('get-loan-interest', (event, id) => {
     getLoanInterest(id);
 })
 
+ipcMain.handle('get-chart-data', async (event, loan_id) => {
+    console.log(`using invoke ${loan_id}`);
+    return new Promise((resolve, reject) => {
+        query = 
+        `WITH interest_CTE AS (
+            SELECT 
+                renewal,
+                COALESCE(SUM(quantity), 0) AS total_interest,
+                loan_id 
+            FROM 
+                interest
+            WHERE
+                loan_id = ?
+            GROUP BY
+                renewal
+        ),
+        payment_CTE AS (
+            SELECT
+                payment_date,
+                COALESCE(SUM(quantity), 0) AS total_payment,
+                loan_id
+            FROM
+                payment
+            WHERE 
+                loan_id = ?
+            GROUP BY 
+                payment_date
+        )
+        SELECT 
+            COALESCE(p.payment_date, i.renewal) AS transaction_date,
+            COALESCE(p.total_payment, 0) AS payment_final,
+            COALESCE(i.total_interest, 0) AS interest_final,
+            COALESCE(i.total_interest, 0) 
+            - COALESCE(p.total_payment, 0) AS profit
+        FROM 
+            payment_CTE AS p
+        FULL OUTER JOIN 
+            interest_CTE AS i ON p.payment_date = i.renewal
+        ORDER BY
+            transaction_date`;
+        
+        database.all(query, [loan_id, loan_id], function(err, rows) {
+            if (err) {
+                reject(err)
+            }
+            resolve(rows)
+        })
+    })
+});
+
 // Create database connection
 const database = new sqlite3.Database('./test.sqlite3', (err) => {
     if (err) {
