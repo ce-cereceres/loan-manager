@@ -152,19 +152,36 @@ ipcMain.handle('get-chart-data', async (event, loan_id) => {
                 loan_id = ?
             GROUP BY 
                 payment_date
+        ),
+        transaction_summary AS (
+            SELECT 
+                COALESCE(p.payment_date, i.renewal) AS transaction_date,
+                -- Get the loan_id for the final join
+                COALESCE(p.loan_id, i.loan_id) AS loan_id,
+                COALESCE(p.total_payment, 0) AS payment_final,
+                COALESCE(i.total_interest, 0) AS interest_final,
+                COALESCE(i.total_interest, 0) 
+                - COALESCE(p.total_payment, 0) AS difference
+            FROM 
+                payment_CTE AS p
+            FULL OUTER JOIN 
+                interest_CTE AS i ON p.payment_date = i.renewal
         )
         SELECT 
-            COALESCE(p.payment_date, i.renewal) AS transaction_date,
-            COALESCE(p.total_payment, 0) AS payment_final,
-            COALESCE(i.total_interest, 0) AS interest_final,
-            COALESCE(i.total_interest, 0) 
-            - COALESCE(p.total_payment, 0) AS profit
+            l.id,
+            s.transaction_date,
+            s.payment_final,
+            s.interest_final,
+            s.difference,
+            l.initial_quantity
+            + SUM(s.difference)
+            OVER (ORDER BY s.transaction_date) AS current_loan_amount
         FROM 
-            payment_CTE AS p
-        FULL OUTER JOIN 
-            interest_CTE AS i ON p.payment_date = i.renewal
+            transaction_summary s
+        JOIN 
+            loan l ON s.loan_id = l.id
         ORDER BY
-            transaction_date`;
+            s.transaction_date;`;
         
         database.all(query, [loan_id, loan_id], function(err, rows) {
             if (err) {

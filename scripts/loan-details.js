@@ -16,7 +16,8 @@ import Chart from 'chart.js/auto';
  * @property {date} transaction_date - The date when the transaction was realized
  * @property {number} payment_final - The sum of the payment
  * @property {number} interest_final - The sum of the interest
- * @property {number} profit - The diference between payment and interest
+ * @property {number} difference - The diference between payment and interest
+ * @property {number} current_loan_amount - The current loan amount in the specified time
  */
 
 /**
@@ -82,9 +83,16 @@ window.api.sendLoanDetails((loan) => {
                             borderColor: '#A13F3B',
                             backgroundColor: '#E0201A'
                         },
+                        // {
+                        //     label: 'Difference',
+                        //     data: chartData.map(row => row.difference),
+                        //     type: 'line',
+                        //     borderColor: '#1B88E0',
+                        //     backgroundColor: '#3C5061'
+                        // },
                         {
-                            label: 'Profit',
-                            data: chartData.map(row => row.profit),
+                            label: 'Loan Amount',
+                            data: chartData.map(row => row.current_loan_amount),
                             type: 'line',
                             borderColor: '#1B88E0',
                             backgroundColor: '#3C5061'
