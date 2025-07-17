@@ -192,6 +192,46 @@ ipcMain.handle('get-chart-data', async (event, loan_id) => {
     })
 });
 
+ipcMain.handle('get-all-profits', async (event) => {
+    return new Promise((resolve, reject) => {
+        query = 
+        `SELECT 
+            SUM(i.quantity) AS total_interest
+        FROM 
+            interest i;`;
+        database.get(query, function(err, row) {
+            if (err) {
+                reject(err);
+            }
+            resolve(row);
+        })
+    })
+});
+
+ipcMain.handle('get-profit-by-borrower', async (event) => {
+    return new Promise((resolve, reject) => {
+        query = 
+        `SELECT 
+            l.borrower_id,
+            b.name || ' ' || b.last_name AS full_name,
+            COALESCE(SUM(i.quantity), 0) AS profit
+        FROM 
+            interest i 
+        LEFT JOIN 
+            loan l ON l.id = i.loan_id
+        LEFT JOIN 
+            borrower b on l.borrower_id = b.id
+        GROUP BY 
+            l.borrower_id;`;
+        database.all(query, function(err, rows) {
+            if (err) {
+                reject(err);
+            }
+            resolve(rows);
+        })
+    })
+});
+
 // Create database connection
 const database = new sqlite3.Database('./test.sqlite3', (err) => {
     if (err) {

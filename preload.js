@@ -15,6 +15,8 @@ contextBridge.exposeInMainWorld('api', {
     openInterestDetails: (id) => ipcRenderer.send('open-interest-details', id),
     getAllBorrowers: () => ipcRenderer.send('get-all-borrowers'),
     getChartData: (loan_id) => ipcRenderer.invoke('get-chart-data', loan_id),
+    getAllProfits: () => ipcRenderer.invoke('get-all-profits'),
+    getProfitByBorrower: () => ipcRenderer.invoke('get-profit-by-borrower'),
     sendAllBorrowers: (callback) => ipcRenderer.on('send-all-borrowers', (event, args) => {
         callback(args);
     }),
