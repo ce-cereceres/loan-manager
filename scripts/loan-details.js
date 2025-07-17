@@ -130,9 +130,14 @@ window.api.sendLoanDetails((loan) => {
             deleteButton.textContent = `Delete id = ${payment.id}`;
             // Delete button action
             deleteButton.addEventListener('click', () => {
-                console.log(`clicked delete button with id = ${payment.id}`);
-                window.database.deletePayment(payment.id);
-                window.api.getLoanDetails(loan.id);
+                // Confirm action when delete button pressed
+                const userConfirmed = confirm('Are you sure you want to delete the payment');
+                if (userConfirmed) {
+                    // Delete payment
+                    window.database.deletePayment(payment.id);
+                    // Refresh the page
+                    window.api.getLoanDetails(loan.id);
+                } 
             });
             // Update button
             updateButton.value = payment.id;
@@ -175,10 +180,13 @@ window.api.sendLoanDetails((loan) => {
             deleteButton.textContent = `Delete id = ${interest.id}`;
             // Delete button action
             deleteButton.addEventListener('click', () => {
-                console.log(`clicked delete button with id = ${interest.id}`);
-                window.database.deleteInterest(interest.id);
-                window.api.getLoanDetails(loan.id);
-                
+                const userConfirmed = confirm('Are you sure you want to delete the interest');
+                if (userConfirmed) {
+                    // Delete interest
+                    window.database.deleteInterest(interest.id);
+                    // Refresh page
+                    window.api.getLoanDetails(loan.id);
+                }
             });
             // Update button
             updateButton.value = interest.id;

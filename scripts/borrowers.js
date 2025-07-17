@@ -15,10 +15,6 @@ document.addEventListener('DOMContentLoaded', () => {
 })
 
 window.api.sendAllBorrowers((borrowers) => {
-    
-    // p.textContent = data;
-    console.log(borrowers);
-
     borrowers.forEach(element => {
         // Create table body
         // Table row
@@ -55,13 +51,20 @@ window.api.sendAllBorrowers((borrowers) => {
 
         // Action on clicked "Delete" button
         deleteButton.addEventListener('click', () => {
-            console.log(`Test for delete button. ID = ${deleteButton.value}`);
-            window.database.deleteBorrower(deleteButton.value);
-            location.reload();
+            const userConfirmed = confirm('Are you sure you want to delete this borrower?');
+            if (userConfirmed) {
+                const doubleUserConfirmed = confirm('All loans from this borrower will be lost. Are you sure you want to continue?');
+                if (doubleUserConfirmed) {
+                    // Delete the borrower
+                    window.database.deleteBorrower(deleteButton.value);
+                    // Reloads the page
+                    location.reload();
+                }
+            }
         });
         // Action on clicked "Update" button
         updateButton.addEventListener('click', () => {
-            console.log(`Test for update button. ID = ${updateButton.value}`);
+            // Opens form to update borrower
             window.api.openBorrowerDetails(updateButton.value)
         });
         
