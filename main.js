@@ -369,13 +369,12 @@ const createLoan = (data) => {
         lenderId,
         data.borrower_id,
         data.initial_quantity,
-        data.initial_quantity,
         data.start_loan_date
     ];
 
     console.log(args);
     
-    const query = `INSERT INTO loan (lender_id, borrower_id, initial_quantity, remaining_quantity, start_date) VALUES (?,?,?,?,?)`;
+    const query = `INSERT INTO loan (lender_id, borrower_id, initial_quantity, start_date) VALUES (?,?,?,?)`;
 
     database.run(query, args, function(err) {
         if (err) {
