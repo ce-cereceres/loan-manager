@@ -253,6 +253,11 @@ const database = new sqlite3.Database('./test.sqlite3', (err) => {
 
         database.run(migrations.interest);
         console.log('interest table created successful');
+
+        database.run(migrations.kyc);
+        console.log('KYC table created successfully');
+
+        database.run(`INSERT INTO lender (name) VALUES ('Carlos')`)
     })
     // database.close((err) => {
     //     if (err == null) {

@@ -78,4 +78,4 @@ CREATE TABLE IF NOT EXISTS kyc (
 `;
 
 // Exports the variables necesaries to create the database structure to main proccess
-module.exports = { lender, payment, borrower, interest, loan }
+module.exports = { lender, payment, borrower, interest, loan, kyc }
