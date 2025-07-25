@@ -1,8 +1,10 @@
 const { app, BrowserWindow } = require('electron/main')
-const { ipcMain } = require('electron')
+const { ipcMain, dialog } = require('electron')
 const path = require('node:path')
+const fs = require('fs')
 const sqlite3 = require('sqlite3').verbose()
 const migrations = require('./database/migration')
+const { v4: uuidv4 } = require('uuid')
 
 // Create window
 const createWindow = () => {
@@ -125,6 +127,97 @@ ipcMain.on('get-loan-interest', (event, id) => {
     getLoanInterest(id);
 })
 
+/**
+ * @typedef {object} DocumentPath
+ * @property {string} title - Title of the file
+ * @property {string} path - Path to file location
+ * @property {number} loan_id - The unique loan id
+ */
+
+/**
+ * @param {DocumentPath} data
+ */
+ipcMain.handle('create-document', async (event, data) => {
+    // Logic to create document
+    console.log(data);
+
+    // Ensures the path is not empty
+    if (data.path === '') {
+        return {success: false, message: 'The path is empty'};
+    }
+
+    // Get user-specific documents directory
+    const userDocumentPath = app.getPath('documents');
+    const appSpecificFolder = path.join(userDocumentPath, 'Loan Manager');
+    const appFilesFilder = path.join(appSpecificFolder, 'Loan Documents');
+    // Get the file name of the path
+    const fileName = path.basename(data.path);
+    
+    try {
+        // Ensures the app directory exists
+        if (!fs.existsSync(appSpecificFolder)) {
+            fs.mkdirSync(appSpecificFolder, { recursive: true });
+        }
+        if (!fs.existsSync(appFilesFilder)) {
+            fs.mkdirSync(appFilesFilder);
+        }
+
+        const lastDotIndex = fileName.lastIndexOf('.');
+        if (lastDotIndex === -1 || lastDotIndex === 0) {
+            return {success: false, message: `Error. File ${fileName} not valid`};
+        }
+
+        const fileExtension = fileName.slice(lastDotIndex + 1);
+        const fileUuid = uuidv4();
+        const destinationFileName = `${fileUuid}.${fileExtension}`;
+
+
+        const destinationFilePath = path.join(appFilesFilder, destinationFileName);
+
+        // Copy the file
+        fs.copyFileSync(data.path, destinationFilePath);
+
+        // Register the file in the database
+        query = 
+        `
+        INSERT INTO kyc (loan_id, title, type, uuid, file_location) VALUES (?,?,?,?,?);
+        `;
+        args = [data.loan_id, data.title, fileExtension, fileUuid, destinationFilePath];
+        database.run(query, args, function(err) {
+            if (err) {
+                return {success: false, message: `Error: ${err.message}`};
+            }
+        });
+        return {success: true, message: `File saved to: ${destinationFilePath}`};
+        
+    } catch (error) {
+        return {success: false, message: `Error saving file: ${error.message}`}
+    }
+
+    
+});
+
+ipcMain.handle('get-loan-documents', async (event, loan_id) => {
+    return new Promise((resolve, reject) => {
+        query = 
+        `
+        SELECT 
+        *
+        FROM 
+            kyc k
+        WHERE 
+            k.loan_id  = ?;
+        `;
+        database.all(query, loan_id, function (err, rows) {
+            if (err) {
+                reject(err);
+            }
+            resolve(rows);
+        })
+    })
+    
+});
+
 ipcMain.handle('get-chart-data', async (event, loan_id) => {
     console.log(`using invoke ${loan_id}`);
     return new Promise((resolve, reject) => {
@@ -231,6 +324,26 @@ ipcMain.handle('get-profit-by-borrower', async (event) => {
         })
     })
 });
+
+ipcMain.handle('get-document-path', async (event) => {
+    const win = BrowserWindow.getFocusedWindow();
+    const { canceled, filePaths } = await dialog.showOpenDialog(win, {
+        properties: ['openFile'],
+        filters: [
+            { name: 'File', extensions: ['png', 'jpg', 'jpeg', 'pdf']}
+        ]
+    })
+
+    if (canceled || filePaths.length === 0) {
+        return {success: false, message: 'file selection canceled', path: ''};
+    }
+
+    const documentPath = filePaths[0];
+    
+    return {success: true, message: `File selected at location ${documentPath}`, path: documentPath};
+    
+    
+})
 
 // Create database connection
 const database = new sqlite3.Database('./test.sqlite3', (err) => {

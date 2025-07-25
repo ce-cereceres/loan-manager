@@ -21,6 +21,7 @@ import Chart from 'chart.js/auto';
  */
 
 /**
+ * Load loan details
  * @param {Loan} loan
  */
 window.api.sendLoanDetails((loan) => {
@@ -53,15 +54,128 @@ window.api.sendLoanDetails((loan) => {
     const loanStartDate = document.querySelector('#loan-start-date');
     loanStartDate.textContent = loan.start_date;
 
+    /**
+     * Documents.
+     * Logic to hande display and creation of documents that belongs to the loan
+     */
+    // Populate documents table
+    async function loanDocument() {
+        const loanDocumentTable = document.querySelector('#loan-document-table');
+        /**
+         * @typedef {object} LoanDocument
+         * @property {number} id - The document id
+         * @property {number} loan_id - The loan id
+         * @property {string} title - The document title
+         * @property {string} type - The document extension
+         * @property {string} uuid - The document name
+         * @property {string} file_location - The location of the file in user pc
+         */
+
+        /**
+         * @type {LoanDocument}
+         */
+        const data = await window.api.getLoanDocuments(loan.id);
+
+        data.forEach(documentFile => {
+            console.log(documentFile);
+            const tr = document.createElement('tr');
+            const title = document.createElement('td');
+            const type = document.createElement('td');
+            const deleteButton = document.createElement('button');
+
+            title.textContent = documentFile.title;
+            type.textContent = documentFile.type;
+            deleteButton.textContent = `Delete with id = ${documentFile.id}`;
+            deleteButton.value = documentFile.id;
+
+            tr.appendChild(title);
+            tr.appendChild(type);
+            tr.appendChild(deleteButton);
+            loanDocumentTable.appendChild(tr);
+            
+            
+        });
+        
+    }loanDocument();
+
+    // Dialog logic to create new documents
+    const documentDialog = document.querySelector('#document-creation');
+    const newDocumentButton = document.querySelector('#new-document');
+    const closeDocumentButton = document.querySelector('#cancel-document-button');
+    newDocumentButton.addEventListener('click', () => {
+        documentDialog.showModal();
+    });
+    closeDocumentButton.addEventListener('click', () => {
+        documentDialog.close();
+    });
+
+    // Open file
+    const openFileButton = document.querySelector('#open-file-button');
+    /** Show the file location in the document creation dialog */
+    const filePathText = document.querySelector('#file-path-text');
+    /** Location of the file */
+    const filePath = document.querySelector('#file-path');
+    const fileTitle = document.querySelector('#document-title');
+    /** Event when "Select File" clicked */
+    openFileButton.addEventListener('click', async () => {
+        /**
+         * @typedef {object} DocumentPath
+         * @property {boolean} success - Status of file selection
+         * @property {string} message - Show in detail the status of the file selection
+         * @property {string} path - Location of the file in user computer
+         */
+        /**
+         * @returns {DocumentPath} documentPath 
+         */
+        const documentPath = await window.api.getDocumentPath();
+        
+        if (documentPath.path === '') {
+            filePathText.textContent = 'File not selected';
+        }
+
+        filePathText.textContent = documentPath.path;
+        filePath.value = documentPath.path;
+        
+    })
+    // Form
+    const documentForm = document.querySelector('#document-form');
+    documentForm.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        // Logic to handle creation of documents
+        if (filePath.value === '') {
+            // File not selected. DISPLAY ERROR TO USER
+            console.log('ERROR. submit file null');
+        } else {
+            // File Selected
+            // Logic to handle document creation
+            const data = {title: fileTitle.value, path: filePath.value, loan_id: loan.id};
+            console.log(data);
+
+            // Returns success and message from operation in main process
+            const status = await window.database.createDocument(data);
+
+            if (status.success) {
+                // After the document is uploaded, refresh the view
+                window.api.getLoanDetails(loan.id);
+            } else {
+                // TODO
+                // Display alert showing the error
+            }
+            
+            
+            
+        }
+
+        
+        
+    })
+
 
     async function combinedChart() {
         /**
          * @type {Array<Transaction>} chartData
          */
         const chartData = await window.api.getChartData(loan.id);
-        console.log(chartData);
-        
-        
         const chartCanvas = document.querySelector('#combined-chart');
         // Chart config
         new Chart(
@@ -102,8 +216,6 @@ window.api.sendLoanDetails((loan) => {
             }
         )
     }combinedChart();
-    // USES SEND ON IPCRENDERER
-    // window.api.getChartData(loan.id);
 
     // Get the loan total amount after adding the interest and subtracting payments
     window.api.getLoanTotalAmount(loan.id);

@@ -32,11 +32,44 @@
         </form>
     </dialog>
 
+    <dialog id="document-creation">
+        <form id="document-form">
+            <label for="document-title">Title</label>
+            <input type="text" name="document-title" id="document-title" required><br>
+
+            <p id="file-path-text"></p>
+            <input type="hidden" name="file-path" id="file-path">
+            <button id="open-file-button" type="button">Select File</button><br>
+
+            <button type="submit">Create</button>
+            <button type="button" id="cancel-document-button">Cancel</button>
+        </form>
+    </dialog>
+
+    <!-- Loan Details -->
     <h1>Loan details</h1>
     <p id="loan-id"></p>
     <p id="loan-amount"></p>
     <p id="loan-start-date"></p>
 
+    <!-- Loan document table -->
+    <div class="loan-document">
+        <table>
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Type</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="loan-document-table">
+
+            </tbody>
+        </table>
+        <button id="new-document">New Document</button>
+    </div>
+
+    <!-- Payment table -->
     <h1>Payment</h1><br>
     <table>
         <thead>
