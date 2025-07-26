@@ -66,5 +66,6 @@ contextBridge.exposeInMainWorld('database', {
     deleteInterest: (id) => ipcRenderer.send('delete-interest', id),
     updateInterest: (data) => ipcRenderer.send('update-interest', data),
     // Loan Document
-    createDocument: (data) => ipcRenderer.invoke('create-document', data)
+    createDocument: (data) => ipcRenderer.invoke('create-document', data),
+    deleteDocument: (id) => ipcRenderer.invoke('delete-document', id)
 })

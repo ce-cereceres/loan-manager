@@ -72,21 +72,52 @@ window.api.sendLoanDetails((loan) => {
          */
 
         /**
-         * @type {LoanDocument}
+         * @type {LoanDocument} data
          */
         const data = await window.api.getLoanDocuments(loan.id);
 
         data.forEach(documentFile => {
             console.log(documentFile);
+            // Row
             const tr = document.createElement('tr');
+            // title row
             const title = document.createElement('td');
+            // Link
+            const linkToDocument = document.createElement('a');
+            // Appends the link to the title td
+            title.appendChild(linkToDocument);
+            // Type row
             const type = document.createElement('td');
+            // Button to delete document
             const deleteButton = document.createElement('button');
 
-            title.textContent = documentFile.title;
+            linkToDocument.textContent = documentFile.title;
+            linkToDocument.href = '#';
             type.textContent = documentFile.type;
             deleteButton.textContent = `Delete with id = ${documentFile.id}`;
             deleteButton.value = documentFile.id;
+
+            // Delete button action
+            deleteButton.addEventListener('click', async () => {
+                const userConfirmed = confirm('Are you sure you want to delete the document');
+                if (userConfirmed) {
+                    // Calls to database to delete the document
+                    const status = await window.database.deleteDocument(documentFile.id);
+                    console.log(status);
+                    if (!status.success) {
+                        // TODO
+                        // Display alert error
+                    }
+                    // After the document is deleted, refresh the view
+                    window.api.getLoanDetails(loan.id);
+                }
+            })
+
+            linkToDocument.addEventListener('click', (event) => {
+                event.preventDefault()
+                console.log(`clicked link with id = ${documentFile.id}`);
+                
+            })
 
             tr.appendChild(title);
             tr.appendChild(type);
@@ -95,7 +126,6 @@ window.api.sendLoanDetails((loan) => {
             
             
         });
-        
     }loanDocument();
 
     // Dialog logic to create new documents

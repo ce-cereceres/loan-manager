@@ -218,6 +218,29 @@ ipcMain.handle('get-loan-documents', async (event, loan_id) => {
     
 });
 
+ipcMain.handle('delete-document', async (event, id) => {
+    return new Promise((resolve, reject) => {
+        query = 
+        `
+        DELETE
+        FROM
+            kyc
+        WHERE
+            id = ?;
+        `;
+        database.run(query, id, function(err) {
+            if (err) {
+                resolve({success: false, message: err.message});
+            }
+            if (this.changes > 0) {
+                resolve({success: true, message: `Row(s) affected ${this.changes}. Borrower id = ${id} deleted successfuly`});
+            } else {
+                resolve({success: false, message: `Borrower with id = ${id} not found`});
+            }
+        });
+    });
+});
+
 ipcMain.handle('get-chart-data', async (event, loan_id) => {
     console.log(`using invoke ${loan_id}`);
     return new Promise((resolve, reject) => {
