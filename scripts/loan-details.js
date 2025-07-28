@@ -68,7 +68,6 @@ window.api.sendLoanDetails((loan) => {
          * @property {string} title - The document title
          * @property {string} type - The document extension
          * @property {string} uuid - The document name
-         * @property {string} file_location - The location of the file in user pc
          */
 
         /**
@@ -102,20 +101,60 @@ window.api.sendLoanDetails((loan) => {
                 const userConfirmed = confirm('Are you sure you want to delete the document');
                 if (userConfirmed) {
                     // Calls to database to delete the document
-                    const status = await window.database.deleteDocument(documentFile.id);
-                    console.log(status);
-                    if (!status.success) {
+                    const locationDeletionStatus = await window.database.deleteDocumentLocation(documentFile.uuid);
+                    console.log(locationDeletionStatus);
+                    
+                    
+
+                    if (locationDeletionStatus.success) {
+                        const databaseDeletionStatus = await window.database.deleteDocument(documentFile.id);
+                        if (databaseDeletionStatus.success) {
+                            // After the document is deleted, refresh the view
+                            window.api.getLoanDetails(loan.id);
+                        } else {
+                            // TODO
+                            // Error deleting file from database
+                            // Display alert
+                        }
+
+                    } else {
                         // TODO
-                        // Display alert error
+                        // Error deleting file from location
+                        // Display alert
+                        const userConfirmedDeletion = confirm('The file was already deleted. Are you sure you want to delete from table?');
+                        if (userConfirmedDeletion) {
+                            const databaseDeletionStatus = await window.database.deleteDocument(documentFile.id);
+                            if (databaseDeletionStatus.success) {
+                                // After the document is deleted, refresh the view
+                                window.api.getLoanDetails(loan.id);
+                            } else {
+                                // TODO
+                                // Error deleting file from database
+                                // Display alert
+                            }
+                        }
                     }
-                    // After the document is deleted, refresh the view
-                    window.api.getLoanDetails(loan.id);
+                    
                 }
             })
 
             linkToDocument.addEventListener('click', (event) => {
                 event.preventDefault()
-                console.log(`clicked link with id = ${documentFile.id}`);
+                // Calls to create a new window sending the file
+                // THIS FUNCTION AFFECTS SECURITY OF THE APP
+                // ANYONE CAN OPENS FILES IF THE UUID IS KNOW
+                window.api.openLoanDocument(documentFile.uuid)
+                    .then(data => {
+                        if (!data.success) {
+                            // Display alert for file not found
+                            console.log('FILE NOT FOUND');
+                            alert('FILE NOT FOUND');
+                        }
+                    })
+                    .catch(error => {
+                        console.log(error);
+                    })
+                
                 
             })
 

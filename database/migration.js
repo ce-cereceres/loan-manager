@@ -73,7 +73,6 @@ CREATE TABLE IF NOT EXISTS kyc (
     title varchar(500),
     type varchar(30),
     uuid varchar(50),
-    file_location varchat(255),
     FOREIGN KEY (loan_id)
         REFERENCES loan (id)
 );

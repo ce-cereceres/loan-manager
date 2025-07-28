@@ -180,9 +180,9 @@ ipcMain.handle('create-document', async (event, data) => {
         // Register the file in the database
         query = 
         `
-        INSERT INTO kyc (loan_id, title, type, uuid, file_location) VALUES (?,?,?,?,?);
+        INSERT INTO kyc (loan_id, title, type, uuid) VALUES (?,?,?,?);
         `;
-        args = [data.loan_id, data.title, fileExtension, fileUuid, destinationFilePath];
+        args = [data.loan_id, data.title, fileExtension, destinationFileName];
         database.run(query, args, function(err) {
             if (err) {
                 return {success: false, message: `Error: ${err.message}`};
@@ -239,6 +239,65 @@ ipcMain.handle('delete-document', async (event, id) => {
             }
         });
     });
+});
+
+ipcMain.handle('delete-document-location', async (event, uuid) => {
+    // Get user-specific documents directory
+    const userDocumentPath = app.getPath('documents');
+    const appSpecificFolder = path.join(userDocumentPath, 'Loan Manager');
+    const appFilesFilder = path.join(appSpecificFolder, 'Loan Documents');
+
+    // File location
+    const fileLocation = path.join(appFilesFilder, uuid);
+
+    return new Promise((resolve, reject) => {
+        // Delete file using its uuid
+        fs.unlink(fileLocation, (err) => {
+            if (err) {
+                resolve({success: false, message: `Failed to delete file ${fileLocation}`});
+            }
+            resolve({success: true, message: `File ${fileLocation} deleted successfuly`});
+        })
+    });
+});
+
+ipcMain.handle('open-loan-document', async (event, uuid) => {
+    const visualizerWindow = new BrowserWindow({
+        width: 1280,
+        height: 720,
+        title: 'Document',
+        webPreferences: {
+            // preload: path.join(__dirname, 'preload.js'),
+            contextIsolation: true,
+            nodeIntegration: false
+        }
+    });
+
+    // Get user-specific documents directory
+    const userDocumentPath = app.getPath('documents');
+    const appSpecificFolder = path.join(userDocumentPath, 'Loan Manager');
+    const appFilesFilder = path.join(appSpecificFolder, 'Loan Documents');
+    const file = path.join(appFilesFilder, uuid)
+
+    console.log(file);
+
+    return new Promise ((resolve, reject) => {
+        // Opens the file
+        visualizerWindow.loadFile(file)
+            .then(() => {
+                resolve({success: true, message: `Window opened successfully`});
+            })
+            .catch(err => {
+                console.log(err);
+                visualizerWindow.close();
+                resolve({success: false, message: `File not found`});
+            })
+
+    })
+    
+    
+
+    
 });
 
 ipcMain.handle('get-chart-data', async (event, loan_id) => {

@@ -19,6 +19,7 @@ contextBridge.exposeInMainWorld('api', {
     getProfitByBorrower: () => ipcRenderer.invoke('get-profit-by-borrower'),
     getDocumentPath: () => ipcRenderer.invoke('get-document-path'),
     getLoanDocuments: (loan_id) => ipcRenderer.invoke('get-loan-documents', loan_id),
+    openLoanDocument: (uuid) => ipcRenderer.invoke('open-loan-document', uuid),
     sendAllBorrowers: (callback) => ipcRenderer.on('send-all-borrowers', (event, args) => {
         callback(args);
     }),
@@ -67,5 +68,6 @@ contextBridge.exposeInMainWorld('database', {
     updateInterest: (data) => ipcRenderer.send('update-interest', data),
     // Loan Document
     createDocument: (data) => ipcRenderer.invoke('create-document', data),
-    deleteDocument: (id) => ipcRenderer.invoke('delete-document', id)
+    deleteDocument: (id) => ipcRenderer.invoke('delete-document', id),
+    deleteDocumentLocation: (uuid) => ipcRenderer.invoke('delete-document-location', uuid)
 })
