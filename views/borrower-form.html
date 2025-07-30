@@ -3,40 +3,103 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>New Borrower</title>
+    <link rel="stylesheet" href="../node_modules/bootstrap/dist/css/bootstrap.min.css">
 </head>
 <body>
-    <form id="borrower-form">
-        <label for="name">Name</label>
-        <input type="text" name="name" id="name"><br>
+    <div class="container-fluid">
+        <nav class="navbar navbar-expand-lg bg-body-tertiary">
+            <div class="container-fluid">
+                <a href="#" id="navbar-brand" class="navbar-brand">Loan Manager</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <div class="navbar-nav">
+                        <a href="#" class="nav-link" id="index-navbar-link">Home</a>
+                        <a href="#" class="nav-link" id="borrowers-navbar-link">Clients</a>
+                        <a href="#" class="nav-link" id="loans-navbar-link">Loans</a>
+                    </div>
+                </div>
+                
+            </div>
+        </nav>
 
-        <label for="last-name">Last Name</label>
-        <input type="text" name="last-name" id="last-name"><br>
+        <div id="alert-placeholder"></div>
 
-        <label for="ine">INE</label>
-        <input type="text" name="ine" id="ine"><br>
+        <form id="borrower-form">
+            <label for="name" class="form-label">Name</label>
+            <input type="text" name="name" id="name" class="form-control"><br>
 
-        <button type="submit">Create</button>
-    </form>
+            <label for="last-name" class="form-label">Last Name</label>
+            <input type="text" name="last-name" id="last-name" class="form-control"><br>
 
+            <label for="ine" class="form-label">INE</label>
+            <input type="text" name="ine" id="ine" class="form-control"><br>
+
+            <button type="submit" class="btn btn-success">Create</button>
+        </form>
+    </div>
+    
     <script>
+        // Form fields selector
         const borrowerForm = document.querySelector('#borrower-form');
         const nameBorrower = document.querySelector('#name');
         const lastName = document.querySelector('#last-name');
         const ine = document.querySelector('#ine');
-
-        
-
-        borrowerForm.addEventListener('submit', (event) => {
+        // Form submit
+        borrowerForm.addEventListener('submit', async (event) => {
             event.preventDefault();
+            const borrowerDetails = [nameBorrower.value, lastName.value, ine.value];
+            const status = await window.database.createBorrower(borrowerDetails);
 
-            let borrowerDetails = [nameBorrower.value, lastName.value, ine.value];
+            if (!status.success) {
+                appendAlert(status.message, 'danger')
+            } else {
+                // Redirect to Borrower Window
+                window.api.openBorrowerWindow();
+            }
             
+        })
 
-            window.database.createBorrower(borrowerDetails);
-            // Redirect to Borrower Window
+        // Alerts
+        const alertPlaceholder = document.querySelector('#alert-placeholder');
+        const appendAlert = (message, type) => {
+            const wrapper = document.createElement('div');
+            wrapper.innerHTML = [
+                `<div class="alert alert-${type} alert-dismissible fade show" role="alert">`,
+                `   <div>${message}</div>`,
+                '   <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>',
+                '</div>'
+            ].join('')
+            alertPlaceholder.append(wrapper);
+        };
+
+
+
+        // Navbar
+        const navbarHome = document.querySelector('#index-navbar-link');
+        const navbarBorrowers = document.querySelector('#borrowers-navbar-link');
+        const navbarLoans = document.querySelector('#loans-navbar-link');
+        const navbarBrand = document.querySelector('#navbar-brand');
+        navbarBrand.addEventListener('click', (event) => {
+            event.preventDefault();
+            window.api.openIndexWindow();
+        })
+        navbarHome.addEventListener('click', (event) => {
+            event.preventDefault();
+            window.api.openIndexWindow()
+        })
+        navbarBorrowers.addEventListener('click', (event) => {
+            event.preventDefault();
             window.api.openBorrowerWindow();
         })
+        navbarLoans.addEventListener('click', (event) => {
+            event.preventDefault();
+            window.api.openLoanWindow();
+        })
     </script>
+
+    <script src="../node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
 </body>
 </html>

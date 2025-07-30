@@ -53,7 +53,7 @@ contextBridge.exposeInMainWorld('api', {
 
 contextBridge.exposeInMainWorld('database', {
     // Borrower
-    createBorrower: (args) => ipcRenderer.send('create-borrower', args),
+    createBorrower: (args) => ipcRenderer.invoke('create-borrower', args),
     deleteBorrower: (id) => ipcRenderer.send('delete-borrower', id),
     updateBorrower: (data) => ipcRenderer.send('update-borrower', data),
     // Loan

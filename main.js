@@ -42,9 +42,26 @@ ipcMain.on('open-borrower-details', (event, id) => {
 })
 
 // Create Borrower
-ipcMain.on('create-borrower', (event, args) => {
-    createBorrower(args);
-})
+ipcMain.handle('create-borrower', async (event, args) => {
+    // Get time in ISO format
+    const timestamp = new Date().toISOString();
+    // Add timestamp to args array for created_at
+    args.push(timestamp);
+    // Add timestamp to args array for updated_at
+    args.push(timestamp);
+    
+    const sql = `INSERT INTO borrower (name, last_name, ine, created_at, updated_at) VALUES (?,?,?,?,?)`;
+    console.log(args);
+    
+    return new Promise((resolve) => {
+        database.run(sql, args, function(err) {
+            if (err) {
+                resolve({success: false, message: `Error: ${err.message}`});
+            }
+            resolve({success: true, message: `New borrower with id = ${this.lastID} created successful`});
+        });
+    });
+});
 
 // Delete Borrower
 ipcMain.on('delete-borrower', (event, id) => {
@@ -464,25 +481,6 @@ const database = new sqlite3.Database('./test.sqlite3', (err) => {
     //     }
     // })
 })
-
-const createBorrower = (args) => {
-    // Get time in ISO format
-    const timestamp = new Date().toISOString();
-    // Add timestamp to args array for created_at
-    args.push(timestamp);
-    // Add timestamp to args array for updated_at
-    args.push(timestamp);
-    
-    const sql = `INSERT INTO borrower (name, last_name, ine, created_at, updated_at) VALUES (?,?,?,?,?)`;
-    console.log(args);
-    
-    database.run(sql, args, function(err) {
-        if (err) {
-            return console.error(err.message);
-        }
-        console.log(`New borrower with id = ${this.lastID} created successful`);
-    })
-}
 
 const deleteBorrower = (id) => {
     const query = `DELETE FROM borrower WHERE id = ?`;
