@@ -3,8 +3,6 @@ import Chart from 'chart.js/auto';
 const viewClientsButton = document.querySelector('#view-clients-button');
 // Get "View Loans" button element
 const viewLoansButton = document.querySelector('#view-loans-button');
-// Get the total-profit div
-const totalProfitDiv = document.querySelector('.total-profit');
 
 // Add event to open clients.html view
 viewClientsButton.addEventListener('click', () => {
@@ -16,12 +14,11 @@ viewLoansButton.addEventListener('click', () => {
 })
 
 async function getTotalProfits() {
-
     const profitAmount = document.querySelector('#total-amount')
-
     const profit = await window.api.getAllProfits();
-    profitAmount.textContent = `Total profits = ${profit.total_interest}`;
+    console.log(profit);
     
+    profitAmount.textContent = `$${profit.total_interest}`;
 }getTotalProfits();
 
 async function getProfitsByBorrower() {
@@ -45,7 +42,7 @@ async function getProfitsByBorrower() {
         const name = document.createElement('td');
         const profit = document.createElement('td');
         name.textContent = borrower.full_name;
-        profit.textContent = borrower.profit;
+        profit.textContent = `$${borrower.profit}`;
         tr.appendChild(name);
         tr.appendChild(profit);
         profitByBorrowerTable.appendChild(tr);
@@ -88,3 +85,25 @@ async function getProfitsByBorrower() {
 
     
 }getProfitsByBorrower();
+
+// Navbar
+const navbarHome = document.querySelector('#index-navbar-link');
+const navbarBorrowers = document.querySelector('#borrowers-navbar-link');
+const navbarLoans = document.querySelector('#loans-navbar-link');
+const navbarBrand = document.querySelector('#navbar-brand');
+navbarBrand.addEventListener('click', (event) => {
+    event.preventDefault();
+    window.api.openIndexWindow();
+})
+navbarHome.addEventListener('click', (event) => {
+    event.preventDefault();
+    window.api.openIndexWindow()
+})
+navbarBorrowers.addEventListener('click', (event) => {
+    event.preventDefault();
+    window.api.openBorrowerWindow();
+})
+navbarLoans.addEventListener('click', (event) => {
+    event.preventDefault();
+    window.api.openLoanWindow();
+})

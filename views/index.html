@@ -4,32 +4,65 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Loan System</title>
+    <link rel="stylesheet" href="../node_modules/bootstrap/dist/css/bootstrap.min.css">
 </head>
 <body>
-    <div class="profit-menu">
-        <div class="total-profit">
-            <p id="total-amount"></p>
-            <!-- Table to display total profit by borrower -->
-            <table>
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Amount</th>
-                    </tr>
-                </thead>
-                <tbody id="profit-by-borrower-tbody">
+    <div class="container-fluid">
+        <nav class="navbar navbar-expand-lg bg-body-tertiary">
+            <div class="container-fluid">
+                <a href="#" id="navbar-brand" class="navbar-brand">Loan Manager</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <div class="navbar-nav">
+                        <a href="#" class="nav-link active" id="index-navbar-link">Home</a>
+                        <a href="#" class="nav-link" id="borrowers-navbar-link">Clients</a>
+                        <a href="#" class="nav-link" id="loans-navbar-link">Loans</a>
+                    </div>
+                </div>
+                
+            </div>
+        </nav>
+        <div class="row">
+            <div class="total-profit col">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Total Profit</h5>
+                        <p id="total-amount" class="card-text"></p>
+                    </div>
+                </div>
+                
+                <!-- Table to display total profit by borrower -->
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th scope="col">Name</th>
+                            <th scope="col">Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody id="profit-by-borrower-tbody">
 
-                </tbody>
-            </table>
+                    </tbody>
+                </table>
+            </div>
+            <div class="monthly-profit col">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Monthly Profit</h5>
+                        <p id="monthly-amount" class="card-text">asd</p>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="monthly-profit">
-
-        </div>
+        
+        <button type="button" id="view-clients-button" class="btn btn-primary">View Borrowers</button>
+        <button type="button" id="view-loans-button" class="btn btn-primary">View Loans</button>
     </div>
-    <button id="view-clients-button">View Borrowers</button>
-    <button id="view-loans-button">View Loans</button>
+    
 
     
     <script src="../dist/index.js"></script>
+    <script src="../node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
 </body>
 </html>

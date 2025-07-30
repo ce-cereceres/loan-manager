@@ -37,18 +37,19 @@ window.api.sendAllBorrowers((borrowers) => {
         // Delete button
         deleteButton.value = element.id;
         deleteButton.textContent = `Delete id = ${element.id}`;
+        deleteButton.classList.add('btn', 'btn-danger')
         // Update button
         updateButton.value = element.id;
         updateButton.textContent = `Update id = ${element.id}`;
+        updateButton.classList.add('btn', 'btn-primary')
         // Appends table data to table row
         tr.appendChild(tdName);
         tr.appendChild(tdLastName);
         tr.appendChild(tdIne);
         tr.appendChild(tdAction);
         // Appends buttons to table data "Action"
-        tdAction.appendChild(deleteButton);
         tdAction.appendChild(updateButton);
-
+        tdAction.appendChild(deleteButton);
         // Action on clicked "Delete" button
         deleteButton.addEventListener('click', () => {
             const userConfirmed = confirm('Are you sure you want to delete this borrower?');
@@ -69,4 +70,26 @@ window.api.sendAllBorrowers((borrowers) => {
         });
         
     });
+})
+
+// Navbar
+const navbarHome = document.querySelector('#index-navbar-link');
+const navbarBorrowers = document.querySelector('#borrowers-navbar-link');
+const navbarLoans = document.querySelector('#loans-navbar-link');
+const navbarBrand = document.querySelector('#navbar-brand');
+navbarBrand.addEventListener('click', (event) => {
+    event.preventDefault();
+    window.api.openIndexWindow();
+})
+navbarHome.addEventListener('click', (event) => {
+    event.preventDefault();
+    window.api.openIndexWindow()
+})
+navbarBorrowers.addEventListener('click', (event) => {
+    event.preventDefault();
+    window.api.openBorrowerWindow();
+})
+navbarLoans.addEventListener('click', (event) => {
+    event.preventDefault();
+    window.api.openLoanWindow();
 })

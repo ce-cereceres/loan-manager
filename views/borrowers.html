@@ -4,24 +4,45 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Borrowers</title>
+    <link rel="stylesheet" href="../node_modules/bootstrap/dist/css/bootstrap.min.css">
 </head>
 <body>
-    <table>
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Last Name</th>
-                <th>INE</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody id="borrowers-table-body">
+    <div class="container-fluid">
+        <nav class="navbar navbar-expand-lg bg-body-tertiary">
+            <div class="container-fluid">
+                <a href="#" id="navbar-brand" class="navbar-brand">Loan Manager</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <div class="navbar-nav">
+                        <a href="#" class="nav-link" id="index-navbar-link">Home</a>
+                        <a href="#" class="nav-link active" id="borrowers-navbar-link">Clients</a>
+                        <a href="#" class="nav-link" id="loans-navbar-link">Loans</a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th scope="col">Name</th>
+                    <th scope="col">Last Name</th>
+                    <th scope="col">INE</th>
+                    <th scope="col">Action</th>
+                </tr>
+            </thead>
+            <tbody id="borrowers-table-body">
 
-        </tbody>
-    </table>
+            </tbody>
+        </table>
 
-    <button id="new-borrower-button">New Borrower</button>
+        <button type="button" id="new-borrower-button" class="btn btn-success">New Borrower</button>
+
+    </div>
+    
 
     <script src="../scripts/borrowers.js"></script>
+    <script src="../node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
 </body>
 </html>
