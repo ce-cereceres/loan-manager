@@ -24,6 +24,12 @@ const createWindow = () => {
     wc.openDevTools()
 }
 
+// Opens the index view
+ipcMain.on('open-index-window', (event) => {
+    const win = BrowserWindow.getFocusedWindow();
+    win.loadFile('./views/index.html');
+})
+
 // Loads borrowers view into the actual window
 ipcMain.on('open-borrower-window', (event) => {
     const win = BrowserWindow.getFocusedWindow()
