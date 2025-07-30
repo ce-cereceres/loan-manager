@@ -1,6 +1,7 @@
 const { contextBridge, ipcRenderer } = require('electron')
 
 contextBridge.exposeInMainWorld('api', {
+    openIndexWindow: () => ipcRenderer.send('open-index-window'),
     openBorrowerWindow: () => ipcRenderer.send('open-borrower-window'),
     openBorrowerForm: () => ipcRenderer.send('open-borrower-form'),
     openBorrowerDetails: (id) => ipcRenderer.send('open-borrower-details', id),
