@@ -75,9 +75,35 @@ ipcMain.on('delete-borrower', (event, id) => {
 })
 
 // Update Borrower
-ipcMain.on('update-borrower', (event, data) => {
-    updateBorrower(data);
-})
+ipcMain.handle('update-borrower', async (event, data) => {
+    // updated_at timestamp 
+    const timestamp = new Date().toISOString();
+    // Add timestamp to data object
+    data.updated_at = timestamp;    
+    
+    const query = `UPDATE borrower SET name = ?, last_name = ?, ine = ?, updated_at = ? WHERE id = ?`;
+    // Create array with object "data"
+    const params = [
+        data.name,
+        data.last_name,
+        data.ine,
+        data.updated_at,
+        data.id
+    ]
+
+    return new Promise((resolve) => {
+        database.run(query, params, function(err) {
+            if (err) {
+                resolve({success: false, message: `Error: ${err.message}`});
+            }
+            if (this.changes > 0) {
+                resolve({success: true, message: `Row(s) affected = ${this.changes}. Borrower with id = ${data.id} updated`});
+            } else {
+                resolve({success: false, message: `Borrower with id = ${data.id} not found`});
+            }
+        });
+    });
+});
 
 // Get data from all borrowers
 ipcMain.on('get-all-borrowers', (event) => {
@@ -501,37 +527,6 @@ const deleteBorrower = (id) => {
             console.log(`Borrower with id = ${id} not found`);
         }
     })
-}
-
-const updateBorrower = (data) => {
-    // updated_at timestamp 
-    const timestamp = new Date().toISOString();
-    // Add timestamp to data object
-    data.updated_at = timestamp;    
-    
-    const query = `UPDATE borrower SET name = ?, last_name = ?, ine = ?, updated_at = ? WHERE id = ?`;
-    // Create array with object "data"
-    const params = [
-        data.name,
-        data.last_name,
-        data.ine,
-        data.updated_at,
-        data.id
-    ]
-    
-    database.run(query, params, function(err) {
-        if (err) {
-            return console.error(err.message);
-        }
-        if (this.changes > 0) {
-            console.log(`Row(s) affected = ${this.changes}`);
-            console.log(`Borrower with id = ${data.id} updated`);
-        } else {
-            console.log(`Borrower with id = ${data.id} not found`);
-        }
-
-    })
-    
 }
 
 const getBorrower = (id) =>{
