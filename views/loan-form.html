@@ -3,23 +3,47 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>New Loan</title>
+    <link rel="stylesheet" href="../node_modules/bootstrap/dist/css/bootstrap.min.css">
 </head>
 <body>
-    <form id="loan-form">
-        
-        <label for="borrower">Borrower</label>
-        <select name="borrower" id="borrower"></select>
+    <div class="container-fluid">
+        <nav class="navbar navbar-expand-lg bg-body-tertiary">
+            <div class="container-fluid">
+                <a href="#" id="navbar-brand" class="navbar-brand">Loan Manager</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <div class="navbar-nav">
+                        <a href="#" class="nav-link" id="index-navbar-link">Home</a>
+                        <a href="#" class="nav-link" id="borrowers-navbar-link">Clients</a>
+                        <a href="#" class="nav-link" id="loans-navbar-link">Loans</a>
+                    </div>
+                </div>
+                
+            </div>
+        </nav>
 
-        <label for="initial-quantity">Quantity</label>
-        <input type="number" name="initial-quantity" id="initial-quantity">
+        <div id="alert-placeholder"></div>
 
-        <label for="start-date">Start Date</label>
-        <input type="datetime-local" name="start-date" id="start-date" required>
+        <form id="loan-form">
+            
+            <label for="borrower">Borrower</label>
+            <select name="borrower" id="borrower"></select>
 
-        <button>Submit</button>
-        
-    </form>
+            <label for="initial-quantity">Quantity</label>
+            <input type="number" name="initial-quantity" id="initial-quantity">
+
+            <label for="start-date">Start Date</label>
+            <input type="datetime-local" name="start-date" id="start-date" required>
+
+            <button>Submit</button>
+            
+        </form>
+    </div>
+    
     <script src="../scripts/loan-form.js"></script>
+    <script src="../node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
 </body>
 </html>

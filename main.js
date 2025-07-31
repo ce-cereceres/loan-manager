@@ -127,9 +127,29 @@ ipcMain.on('open-loan-form', (event) => {
     win.loadFile('./views/loan-form.html');
 })
 
-ipcMain.on('create-loan', (event, data) => {
-    createLoan(data);
-})
+ipcMain.handle('create-loan', async (event, data) => {
+    console.log(data);
+    // For development only
+    const lenderId = '1'; 
+    const args = [
+        lenderId,
+        data.borrower_id,
+        data.initial_quantity,
+        data.start_loan_date
+    ];
+    console.log(args);
+    const query = `INSERT INTO loan (lender_id, borrower_id, initial_quantity, start_date) VALUES (?,?,?,?)`;
+
+    return new Promise((resolve) => {
+        database.run(query, args, function(err) {
+            if (err) {
+                resolve({success: false, message: `Error: ${err.message}`});
+            } else {
+                resolve({success: true, message: `New loan with id = ${this.lastID} created successful`});
+            }
+        });
+    });
+});
 
 ipcMain.handle('get-loans', async (event, id) => {
     query = `SELECT * FROM loan WHERE borrower_id = ?`;
@@ -559,30 +579,6 @@ const getBorrower = (id) =>{
         })
     })
     
-}
-
-const createLoan = (data) => {
-    console.log(data);
-    // For development only
-    const lenderId = '1'; 
-    const args = [
-        lenderId,
-        data.borrower_id,
-        data.initial_quantity,
-        data.start_loan_date
-    ];
-
-    console.log(args);
-    
-    const query = `INSERT INTO loan (lender_id, borrower_id, initial_quantity, start_date) VALUES (?,?,?,?)`;
-
-    database.run(query, args, function(err) {
-        if (err) {
-            return console.error(err.message);
-        }
-        console.log(`New loan with id = ${this.lastID} created successful`);
-    })
-
 }
 
 const getLoanDetails = (id) => {
