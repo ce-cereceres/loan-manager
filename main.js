@@ -106,9 +106,16 @@ ipcMain.handle('update-borrower', async (event, data) => {
 });
 
 // Get data from all borrowers
-ipcMain.on('get-all-borrowers', (event) => {
-    getAllBorrowers();
-})
+ipcMain.handle('get-all-borrowers', async (event) => {
+    return new Promise((resolve) => {
+        database.all("SELECT * FROM borrower", function(err, rows) {
+            if (err) {
+                resolve({success: false, message: `Error ${err.message}`, data: null});
+            }
+            resolve({success: true, message:`successfully retrived all borrowers`, data: rows})
+        });
+    });
+});
 
 ipcMain.on('open-loan-window', (event) => {
     const win = BrowserWindow.getFocusedWindow();
@@ -124,9 +131,17 @@ ipcMain.on('create-loan', (event, data) => {
     createLoan(data);
 })
 
-ipcMain.on('get-loans', (event, id) => {
-    getLoans(id)
-})
+ipcMain.handle('get-loans', async (event, id) => {
+    query = `SELECT * FROM loan WHERE borrower_id = ?`;
+    return new Promise((resolve) => {
+        database.all(query, id, function(err, rows) {
+            if (err) {
+                resolve({success: false, message: `Error: ${err.message}`, data: null});
+            }
+            resolve({success: true, message: `Loans for borrower_id = ${id} successfully retrived`, data: rows})
+        });
+    });
+});
 
 ipcMain.on('get-loan-details', (event, id) => {
     getLoanDetails(id)
@@ -546,20 +561,6 @@ const getBorrower = (id) =>{
     
 }
 
-const getAllBorrowers = () => {
-    const win = BrowserWindow.getFocusedWindow();
-
-    database.all("SELECT * FROM borrower", function(err, row) {
-        // console.log(row);
-        if (err) {
-            return console.error(err.message);
-        }
-        // Send all borrowers details
-        win.webContents.send('send-all-borrowers', row);
-    })
-    
-}
-
 const createLoan = (data) => {
     console.log(data);
     // For development only
@@ -582,18 +583,6 @@ const createLoan = (data) => {
         console.log(`New loan with id = ${this.lastID} created successful`);
     })
 
-}
-
-const getLoans = (id) => {
-    query = `SELECT * FROM loan WHERE borrower_id = ?`;
-    win = BrowserWindow.getFocusedWindow();
-    database.all(query, id, function(err, rows) {
-        if (err) {
-            return console.error(err.message);
-        }
-        // Send all loans details
-        win.webContents.send('send-loans', rows);
-    })
 }
 
 const getLoanDetails = (id) => {
