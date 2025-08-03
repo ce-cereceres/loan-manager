@@ -48,11 +48,18 @@ document.addEventListener('DOMContentLoaded', async () => {
         for (const borrower of borrowerArray) {
             // Wrapper for each individual borrower
             const borrowerWrapper = document.createElement('div');
+            borrowerWrapper.classList.add('row')
+            // Wrapper for Loan Details
+            const loanDetailsWrapper = document.createElement('div');
+            loanDetailsWrapper.classList.add('col-4');
+            // Appends loanDetailsWrapper to borrowerWrapper
+            borrowerWrapper.appendChild(loanDetailsWrapper);
             // Borrower name
             const borrowerName = document.createElement('h1');
             borrowerName.textContent = `${borrower.name} ${borrower.last_name}`;
-            // Appends to divs
-            borrowerWrapper.appendChild(borrowerName);
+            // Append name to loanDetails
+            loanDetailsWrapper.appendChild(borrowerName);
+            // Append to main document
             borrowersContainer.appendChild(borrowerWrapper);
 
             /**
@@ -79,22 +86,36 @@ document.addEventListener('DOMContentLoaded', async () => {
                  */
                 const loansArray = borrowerLoan.data;
                 for (const loan of loansArray) {
+                    // Labels
                     const loanAmount = document.createElement('p');
                     const loanStartDate = document.createElement('p');
                     loanAmount.textContent = `Loan initial amount: ${loan.initial_quantity}`;
                     loanStartDate.textContent = `Loan start date: ${loan.start_date}`;
 
-                    // "Edit Loan" Button
-                    const loanEditButton = document.createElement("button");
-                    loanEditButton.value = loan.id;
-                    loanEditButton.textContent = `Edit loan with id = ${loan.id}`;
-                    loanEditButton.addEventListener('click', () => {
+                    // Loan remaining amount
+                    const loanRemainingAmount = await window.api.getLoanTotalAmount(loan.id);
+                    if (!loanRemainingAmount.success) {
+                        appendAlert(loanRemainingAmount.message, 'danger');
+                    } else {
+                        // Create label with the remaining amount
+                        const loanRemainingAmountLabel = document.createElement('p');
+                        loanRemainingAmountLabel.textContent = `Loan Remaining Amount: ${loanRemainingAmount.data.total_loan}`
+                        loanDetailsWrapper.appendChild(loanRemainingAmountLabel);
+                    }
+                    
+
+                    // "View Loan Details" Button
+                    const loanViewButton = document.createElement("button");
+                    loanViewButton.value = loan.id;
+                    loanViewButton.textContent = `View Loan Details with id = ${loan.id}`;
+                    loanViewButton.classList.add('btn', 'btn-primary')
+                    loanViewButton.addEventListener('click', () => {
                         window.api.getLoanDetails(loan.id);
                     });
 
-                    borrowerWrapper.appendChild(loanAmount);
-                    borrowerWrapper.appendChild(loanStartDate);
-                    borrowerWrapper.appendChild(loanEditButton);
+                    loanDetailsWrapper.appendChild(loanAmount);
+                    loanDetailsWrapper.appendChild(loanStartDate);
+                    loanDetailsWrapper.appendChild(loanViewButton);
                 }
             }
         }        
