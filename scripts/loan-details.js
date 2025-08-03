@@ -45,14 +45,38 @@ window.api.sendLoanDetails((loan) => {
     const interestForm = document.querySelector('#interest-form');
     // "Cancel Interest" Dialog Button
     const interestCancelButton = document.querySelector('#cancel-interest-button');
-    // "Loan" id label
-    const loanId = document.querySelector('#loan-id');
-    loanId.textContent = loan.id;
-    // "Loan" amount label
-    const loanAmount = document.querySelector('#loan-amount');
-    // "Loan" start date label
-    const loanStartDate = document.querySelector('#loan-start-date');
-    loanStartDate.textContent = loan.start_date;
+
+
+    async function getLoanDetails() {
+        // Get the borrower name
+        const borrowerName = await window.api.getBorrowerName(loan.borrower_id);
+        if (!borrowerName.success) {
+            appendAlert(borrowerName.message, 'danger');
+        }
+        // Get the loan total amount after adding the interest and subtracting payments
+        const loanAmountData = await window.api.getLoanTotalAmount(loan.id);
+        if (!loanAmountData.success) {
+            appendAlert(loanAmountData.message, 'danger');
+        }
+        // "Loan" id label DEBUG
+        const loanId = document.querySelector('#loan-id');
+        loanId.textContent = loan.id;
+        // Borrower name
+        const borrowerNameLabel = document.querySelector('#borrower-name');
+        borrowerNameLabel.textContent = `Name: ${borrowerName.data.name} ${borrowerName.data.last_name}`;
+        console.log(borrowerName.data);
+        // Loan initial amount
+        const loanInitialAmount = document.querySelector('#loan-initial-amount');
+        loanInitialAmount.textContent = `Initial amount: ${loan.initial_quantity}`
+        // "Loan" amount label
+        const loanAmount = document.querySelector('#loan-amount');
+        loanAmount.textContent = `Remaining amount: ${loanAmountData.data.total_loan}`;
+        console.log(loanAmountData.data);
+        
+        // "Loan" start date label
+        const loanStartDate = document.querySelector('#loan-start-date');
+        loanStartDate.textContent = `Loan start date: ${loan.start_date}`;
+    }getLoanDetails();
 
     /**
      * Documents.
@@ -230,13 +254,7 @@ window.api.sendLoanDetails((loan) => {
                 // TODO
                 // Display alert showing the error
             }
-            
-            
-            
         }
-
-        
-        
     })
 
 
@@ -286,11 +304,7 @@ window.api.sendLoanDetails((loan) => {
         )
     }combinedChart();
 
-    // Get the loan total amount after adding the interest and subtracting payments
-    window.api.getLoanTotalAmount(loan.id);
-    window.api.sendLoanTotalAmount((loanTotalAmount) => {
-        loanAmount.textContent = loanTotalAmount.total_loan;
-    })
+    
 
     // Get all payments to selected loan and populate payment table
     window.api.getLoanPayment(loan.id);
@@ -305,10 +319,14 @@ window.api.sendLoanDetails((loan) => {
             // Buttons
             const deleteButton = document.createElement("button");
             const updateButton = document.createElement("button");
+            // Buttons wrapper
+            const buttonsWrapper = document.createElement('div');
+            buttonsWrapper.classList.add('btn-group');
 
             // Delete button
             deleteButton.value = payment.id;
             deleteButton.textContent = `Delete id = ${payment.id}`;
+            deleteButton.classList.add('btn', 'btn-danger')
             // Delete button action
             deleteButton.addEventListener('click', () => {
                 // Confirm action when delete button pressed
@@ -323,6 +341,7 @@ window.api.sendLoanDetails((loan) => {
             // Update button
             updateButton.value = payment.id;
             updateButton.textContent = `Update id = ${payment.id}`;
+            updateButton.classList.add('btn', 'btn-info')
             // Update button action
             updateButton.addEventListener('click', () => {
                 console.log(`clicked update button with id = ${payment.id}`);
@@ -336,8 +355,9 @@ window.api.sendLoanDetails((loan) => {
             tr.appendChild(tdAction);
 
             // Appends buttons
-            tdAction.appendChild(deleteButton);
-            tdAction.appendChild(updateButton);
+            buttonsWrapper.appendChild(updateButton);
+            buttonsWrapper.appendChild(deleteButton);
+            tdAction.appendChild(buttonsWrapper);
 
         });
     })
@@ -355,10 +375,14 @@ window.api.sendLoanDetails((loan) => {
             // Buttons
             const deleteButton = document.createElement("button");
             const updateButton = document.createElement("button");
+            // Buttons wrapper
+            const buttonsWrapper = document.createElement('div');
+            buttonsWrapper.classList.add('btn-group');
 
             // Delete button
             deleteButton.value = interest.id;
             deleteButton.textContent = `Delete id = ${interest.id}`;
+            deleteButton.classList.add('btn', 'btn-danger')
             // Delete button action
             deleteButton.addEventListener('click', () => {
                 const userConfirmed = confirm('Are you sure you want to delete the interest');
@@ -372,6 +396,7 @@ window.api.sendLoanDetails((loan) => {
             // Update button
             updateButton.value = interest.id;
             updateButton.textContent = `Update id = ${interest.id}`;
+            updateButton.classList.add('btn', 'btn-info')
             // Update button action
             updateButton.addEventListener('click', () => {
                 console.log(`clicked update button with id = ${interest.id}`);
@@ -385,9 +410,9 @@ window.api.sendLoanDetails((loan) => {
             tr.appendChild(tdAction);
 
             // Appends buttons
-            tdAction.appendChild(deleteButton);
-            tdAction.appendChild(updateButton);
-
+            buttonsWrapper.appendChild(updateButton);
+            buttonsWrapper.appendChild(deleteButton);
+            tdAction.appendChild(buttonsWrapper);
         });
     })
 
@@ -439,4 +464,39 @@ window.api.sendLoanDetails((loan) => {
         // After the info is updated, redirect to loans-details view
         window.api.getLoanDetails(loan.id);
     })
+})
+
+// Alerts
+const alertPlaceholder = document.querySelector('#alert-placeholder');
+const appendAlert = (message, type) => {
+    const wrapper = document.createElement('div');
+    wrapper.innerHTML = [
+        `<div class="alert alert-${type} alert-dismissible fade show" role="alert">`,
+        `   <div>${message}</div>`,
+        '   <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>',
+        '</div>'
+    ].join('')
+    alertPlaceholder.append(wrapper);
+};
+
+// Navbar
+const navbarHome = document.querySelector('#index-navbar-link');
+const navbarBorrowers = document.querySelector('#borrowers-navbar-link');
+const navbarLoans = document.querySelector('#loans-navbar-link');
+const navbarBrand = document.querySelector('#navbar-brand');
+navbarBrand.addEventListener('click', (event) => {
+    event.preventDefault();
+    window.api.openIndexWindow();
+})
+navbarHome.addEventListener('click', (event) => {
+    event.preventDefault();
+    window.api.openIndexWindow()
+})
+navbarBorrowers.addEventListener('click', (event) => {
+    event.preventDefault();
+    window.api.openBorrowerWindow();
+})
+navbarLoans.addEventListener('click', (event) => {
+    event.preventDefault();
+    window.api.openLoanWindow();
 })
