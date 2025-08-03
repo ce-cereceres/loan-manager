@@ -119,6 +119,7 @@ window.api.sendLoanDetails((loan) => {
             type.textContent = documentFile.type;
             deleteButton.textContent = `Delete with id = ${documentFile.id}`;
             deleteButton.value = documentFile.id;
+            deleteButton.classList.add('btn', 'btn-danger');
 
             // Delete button action
             deleteButton.addEventListener('click', async () => {
@@ -299,6 +300,11 @@ window.api.sendLoanDetails((loan) => {
                             backgroundColor: '#3C5061'
                         }
                     ]
+                },
+                options: {
+                    interaction: {
+                        intersect: false
+                    }
                 }
             }
         )
