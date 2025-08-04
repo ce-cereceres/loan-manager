@@ -1,3 +1,4 @@
+import Chart from 'chart.js/auto';
 // Selects the container in the main body of the html document
 // const container = document.querySelector('#loans-content');
 
@@ -49,16 +50,11 @@ document.addEventListener('DOMContentLoaded', async () => {
             // Wrapper for each individual borrower
             const borrowerWrapper = document.createElement('div');
             borrowerWrapper.classList.add('row')
-            // Wrapper for Loan Details
-            const loanDetailsWrapper = document.createElement('div');
-            loanDetailsWrapper.classList.add('col-4');
-            // Appends loanDetailsWrapper to borrowerWrapper
-            borrowerWrapper.appendChild(loanDetailsWrapper);
             // Borrower name
             const borrowerName = document.createElement('h1');
             borrowerName.textContent = `${borrower.name} ${borrower.last_name}`;
             // Append name to loanDetails
-            loanDetailsWrapper.appendChild(borrowerName);
+            borrowerWrapper.appendChild(borrowerName);
             // Append to main document
             borrowersContainer.appendChild(borrowerWrapper);
 
@@ -86,6 +82,9 @@ document.addEventListener('DOMContentLoaded', async () => {
                  */
                 const loansArray = borrowerLoan.data;
                 for (const loan of loansArray) {
+                    // Wrapper
+                    const loanDetailsWrapper = document.createElement('div');
+                    loanDetailsWrapper.classList.add('col-6');
                     // Labels
                     const loanAmount = document.createElement('p');
                     const loanStartDate = document.createElement('p');
@@ -113,9 +112,78 @@ document.addEventListener('DOMContentLoaded', async () => {
                         window.api.getLoanDetails(loan.id);
                     });
 
+                    // Create Canvas for chart
+                    const chartDiv = document.createElement('div');
+                    chartDiv.classList.add('col-6');
+                    const chartCanvas = document.createElement('canvas');
+                    chartDiv.appendChild(chartCanvas);
+                    
+                    
+
+                    async function combinedChart() {
+                        /**
+                         * @type {Array<Transaction>} chartData
+                         */
+                        const chartData = await window.api.getChartData(loan.id);
+                        // Chart config
+                        new Chart(
+                            chartCanvas,
+                            {
+                                type: 'bar',
+                                data: {
+                                    labels: chartData.map(row => row.transaction_date),
+                                    datasets: [
+                                        {
+                                            label: 'Interest',
+                                            data: chartData.map(row => row.interest_final),
+                                            borderColor: '#3F8B5A',
+                                            backgroundColor: '#1BE060'
+                                        },
+                                        {
+                                            label: 'Payment',
+                                            data: chartData.map(row => row.payment_final),
+                                            borderColor: '#A13F3B',
+                                            backgroundColor: '#E0201A'
+                                        },
+                                        // {
+                                        //     label: 'Difference',
+                                        //     data: chartData.map(row => row.difference),
+                                        //     type: 'line',
+                                        //     borderColor: '#1B88E0',
+                                        //     backgroundColor: '#3C5061'
+                                        // },
+                                        {
+                                            label: 'Loan Amount',
+                                            data: chartData.map(row => row.current_loan_amount),
+                                            type: 'line',
+                                            borderColor: '#1B88E0',
+                                            backgroundColor: '#3C5061'
+                                        },
+                                        {
+                                            label: 'Profit',
+                                            data: chartData.map(row => row.profit),
+                                            type: 'line',
+                                            borderColor: '#E0BB1B',
+                                            backgroundColor: '#897310'
+                                        }
+                                    ]
+                                },
+                                options: {
+                                    interaction: {
+                                        intersect: false
+                                    }
+                                }
+                            }
+                        )
+                    }combinedChart();
+
+
+
                     loanDetailsWrapper.appendChild(loanAmount);
                     loanDetailsWrapper.appendChild(loanStartDate);
                     loanDetailsWrapper.appendChild(loanViewButton);
+                    borrowerWrapper.appendChild(loanDetailsWrapper);
+                    borrowerWrapper.appendChild(chartDiv);
                 }
             }
         }        

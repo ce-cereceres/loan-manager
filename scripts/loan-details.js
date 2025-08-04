@@ -298,6 +298,13 @@ window.api.sendLoanDetails((loan) => {
                             type: 'line',
                             borderColor: '#1B88E0',
                             backgroundColor: '#3C5061'
+                        },
+                        {
+                            label: 'Profit',
+                            data: chartData.map(row => row.profit),
+                            type: 'line',
+                            borderColor: '#E0BB1B',
+                            backgroundColor: '#897310'
                         }
                     ]
                 },

@@ -450,7 +450,8 @@ ipcMain.handle('get-chart-data', async (event, loan_id) => {
     console.log(`using invoke ${loan_id}`);
     return new Promise((resolve, reject) => {
         query = 
-        `WITH interest_CTE AS (
+        `
+        WITH interest_CTE AS (
             SELECT 
                 renewal,
                 COALESCE(SUM(quantity), 0) AS total_interest,
@@ -496,13 +497,15 @@ ipcMain.handle('get-chart-data', async (event, loan_id) => {
             s.difference,
             l.initial_quantity
             + SUM(s.difference)
-            OVER (ORDER BY s.transaction_date) AS current_loan_amount
+            OVER (ORDER BY s.transaction_date) AS current_loan_amount,
+            SUM(s.interest_final) OVER (ORDER BY s.transaction_date) AS profit
         FROM 
             transaction_summary s
         JOIN 
             loan l ON s.loan_id = l.id
         ORDER BY
-            s.transaction_date;`;
+            s.transaction_date;
+        `;
         
         database.all(query, [loan_id, loan_id], function(err, rows) {
             if (err) {
