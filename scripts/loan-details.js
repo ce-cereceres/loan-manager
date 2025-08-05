@@ -123,7 +123,7 @@ window.api.sendLoanDetails((loan) => {
             linkToDocument.textContent = documentFile.title;
             linkToDocument.href = '#';
             type.textContent = documentFile.type;
-            deleteButton.textContent = `Delete with id = ${documentFile.id}`;
+            deleteButton.textContent = `Delete`;
             deleteButton.value = documentFile.id;
             deleteButton.classList.add('btn', 'btn-danger');
 
@@ -333,7 +333,7 @@ window.api.sendLoanDetails((loan) => {
             const tdDate = document.createElement("td");
             tdDate.textContent = payment.payment_date;
             const tdAmount = document.createElement("td");
-            tdAmount.textContent = payment.quantity;
+            tdAmount.textContent = `$${payment.quantity}`;
             const tdAction = document.createElement("td");
             // Buttons
             const deleteButton = document.createElement("button");
@@ -344,7 +344,7 @@ window.api.sendLoanDetails((loan) => {
 
             // Delete button
             deleteButton.value = payment.id;
-            deleteButton.textContent = `Delete id = ${payment.id}`;
+            deleteButton.textContent = `Delete`;
             deleteButton.classList.add('btn', 'btn-danger')
             // Delete button action
             deleteButton.addEventListener('click', () => {
@@ -359,7 +359,7 @@ window.api.sendLoanDetails((loan) => {
             });
             // Update button
             updateButton.value = payment.id;
-            updateButton.textContent = `Update id = ${payment.id}`;
+            updateButton.textContent = `Update`;
             updateButton.classList.add('btn', 'btn-info')
             // Update button action
             updateButton.addEventListener('click', () => {
@@ -389,7 +389,7 @@ window.api.sendLoanDetails((loan) => {
             const tdDate = document.createElement("td");
             tdDate.textContent = interest.renewal;
             const tdAmount = document.createElement("td");
-            tdAmount.textContent = interest.quantity;
+            tdAmount.textContent = `$${interest.quantity}`;
             const tdAction = document.createElement("td");
             // Buttons
             const deleteButton = document.createElement("button");
@@ -400,7 +400,7 @@ window.api.sendLoanDetails((loan) => {
 
             // Delete button
             deleteButton.value = interest.id;
-            deleteButton.textContent = `Delete id = ${interest.id}`;
+            deleteButton.textContent = `Delete`;
             deleteButton.classList.add('btn', 'btn-danger')
             // Delete button action
             deleteButton.addEventListener('click', () => {
@@ -414,7 +414,7 @@ window.api.sendLoanDetails((loan) => {
             });
             // Update button
             updateButton.value = interest.id;
-            updateButton.textContent = `Update id = ${interest.id}`;
+            updateButton.textContent = `Update`;
             updateButton.classList.add('btn', 'btn-info')
             // Update button action
             updateButton.addEventListener('click', () => {
