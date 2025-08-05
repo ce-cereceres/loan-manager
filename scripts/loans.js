@@ -190,21 +190,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 });
 
-
-
-// TODO
-// window.api.getLoanTotalAmount(loan.id); 
-
-
-window.api.sendLoanTotalAmount((amount) => {
-    console.log(amount);
-    const loanDetailsDiv = document.querySelector(`#loan-details-${amount.id}`);
-    // Loan remaining amount
-    const loanRemainingAmount = document.createElement('p');
-    loanRemainingAmount.innerText = `Loan Remainig Amount: ${amount.total_loan}`;
-    loanDetailsDiv.appendChild(loanRemainingAmount);
-});
-
 // Alerts
 const alertPlaceholder = document.querySelector('#alert-placeholder');
 const appendAlert = (message, type) => {
