@@ -5,13 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Report</title>
     <link rel="stylesheet" href="../node_modules/bootstrap/dist/css/bootstrap.min.css">
+    <style>
+        @media print {
+            .no-print {
+                display: none;
+            }
+        }
+    </style>
 </head>
 <body>
     <div class="container-fluid">
+        <button type="button" class="btn btn-success no-print" id="print-button">Print</button>
+
         <div class="membrete card">
             <div class="card-body row">
                 <div class="col-12">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam interdum dolor ac ipsum semper, sed vulputate risus fringilla. Integer tempus velit lorem, in ullamcorper mi euismod eu. Cras sed dolor egestas, tincidunt ante non, consequat ipsum. Nam quis eros ultrices, mattis eros in, venenatis nisi. Mauris aliquam pellentesque pharetra. In nisi erat, efficitur vitae ullamcorper id, gravida ut justo. Donec cursus metus a elementum semper. Phasellus accumsan consectetur sapien, vitae gravida ipsum pulvinar quis. Mauris lectus nisl, ullamcorper eu bibendum in, dignissim et eros. Mauris nisl augue, tincidunt id finibus nec, ultricies pulvinar urna. Ut nec velit sed mauris ultrices pulvinar vitae sed nulla. Quisque a lorem eu purus facilisis suscipit ac vel diam. Aliquam erat volutpat. Donec volutpat pellentesque magna, vitae lacinia diam tempus a. 
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam interdum dolor ac ipsum semper, sed vulputate risus fringilla. Integer tempus velit lorem, in ullamcorper mi euismod eu. Cras sed dolor egestas, tincidunt ante non, consequat ipsum. Nam quis eros ultrices, mattis eros in, venenatis nisi. Mauris aliquam pellentesque pharetra. In nisi erat, efficitur vitae ullamcorper id, gravida ut justo.
                 </div>
             </div>
         </div>

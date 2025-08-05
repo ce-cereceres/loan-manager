@@ -587,8 +587,9 @@ ipcMain.on('print-report', (event, loan_id) => {
             nodeIntegration: false
         }
     });
-    
 
+    
+    
     const query = 
     `
     SELECT
@@ -608,9 +609,13 @@ ipcMain.on('print-report', (event, loan_id) => {
                 })
         }
     })
+})
 
-    printWindow.webContents.print({
-        silent: false
+ipcMain.on('finished-printing', (event) => {
+    const win = BrowserWindow.getFocusedWindow();
+    win.webContents.print({
+        silent:false,
+        printBackground: true
     })
 })
 

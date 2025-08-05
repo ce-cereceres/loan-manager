@@ -23,6 +23,7 @@ contextBridge.exposeInMainWorld('api', {
     getLoanDocuments: (loan_id) => ipcRenderer.invoke('get-loan-documents', loan_id),
     openLoanDocument: (uuid) => ipcRenderer.invoke('open-loan-document', uuid),
     printReport: (loan_id) => ipcRenderer.send('print-report', loan_id),
+    finishedLoadingToPrint: () => ipcRenderer.send('finished-printing'),
     sendAllBorrowers: (callback) => ipcRenderer.on('send-all-borrowers', (event, args) => {
         callback(args);
     }),

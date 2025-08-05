@@ -13,9 +13,11 @@ window.api.sendPrintDetails((loan) => {
     const name = document.querySelector('#name');
     const ine = document.querySelector('#ine');
     const startLoanDate = document.querySelector('#start-loan-date');
+    const startDate = new Date(loan.start_date);
+    const startDateString = startDate.toDateString();
     startLoanDate.innerHTML = [
         '<strong>Fecha de inicio del prestamo:</strong>',
-        `<div>${loan.start_date}</div>`
+        `<div>${startDateString}</div>`
     ].join('');
     // The date when the report is being generated
     const generateLoanDate = document.querySelector('#generate-loan-date');
@@ -115,4 +117,12 @@ window.api.sendPrintDetails((loan) => {
             `$${totalInterestAmount}`
         ].join('');
     })
+
+    // Print button
+    const printButton = document.querySelector('#print-button');
+    printButton.addEventListener('click', () => {
+        window.api.finishedLoadingToPrint();
+    })
+    console.log(printButton);
+    
 })
