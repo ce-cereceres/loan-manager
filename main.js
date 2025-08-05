@@ -576,6 +576,44 @@ ipcMain.handle('get-document-path', async (event) => {
     
 })
 
+ipcMain.on('print-report', (event, loan_id) => {
+    const printWindow = new BrowserWindow({
+        width: 1280,
+        height: 720,
+        title: 'Report',
+        webPreferences: {
+            preload: path.join(__dirname, 'preload.js'),
+            contextIsolation: true,
+            nodeIntegration: false
+        }
+    });
+    
+
+    const query = 
+    `
+    SELECT
+        *
+    FROM
+        loan
+    WHERE
+        id = ?;
+    `;
+    database.get(query, loan_id, function (err, row) {
+        if (err) {
+            console.error(`Loan id: ${loan_id} dont exists`);
+        } else {
+            printWindow.loadFile('./views/report.html')
+                .then(() => {
+                    printWindow.webContents.send('send-print-details', row)
+                })
+        }
+    })
+
+    printWindow.webContents.print({
+        silent: false
+    })
+})
+
 // Create database connection
 const database = new sqlite3.Database('./test.sqlite3', (err) => {
     if (err) {

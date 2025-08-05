@@ -22,6 +22,7 @@ contextBridge.exposeInMainWorld('api', {
     getDocumentPath: () => ipcRenderer.invoke('get-document-path'),
     getLoanDocuments: (loan_id) => ipcRenderer.invoke('get-loan-documents', loan_id),
     openLoanDocument: (uuid) => ipcRenderer.invoke('open-loan-document', uuid),
+    printReport: (loan_id) => ipcRenderer.send('print-report', loan_id),
     sendAllBorrowers: (callback) => ipcRenderer.on('send-all-borrowers', (event, args) => {
         callback(args);
     }),
@@ -48,6 +49,9 @@ contextBridge.exposeInMainWorld('api', {
     }),
     sendInterestDetails: (callback) => ipcRenderer.on('send-interest-details', (event, interest) => {
         callback(interest);
+    }),
+    sendPrintDetails: (callback) => ipcRenderer.on('send-print-details', (event, loan) => {
+        callback(loan);
     })
     
 

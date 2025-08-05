@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Report</title>
+    <link rel="stylesheet" href="../node_modules/bootstrap/dist/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="membrete card">
+            <div class="card-body row">
+                <div class="col-12">
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam interdum dolor ac ipsum semper, sed vulputate risus fringilla. Integer tempus velit lorem, in ullamcorper mi euismod eu. Cras sed dolor egestas, tincidunt ante non, consequat ipsum. Nam quis eros ultrices, mattis eros in, venenatis nisi. Mauris aliquam pellentesque pharetra. In nisi erat, efficitur vitae ullamcorper id, gravida ut justo. Donec cursus metus a elementum semper. Phasellus accumsan consectetur sapien, vitae gravida ipsum pulvinar quis. Mauris lectus nisl, ullamcorper eu bibendum in, dignissim et eros. Mauris nisl augue, tincidunt id finibus nec, ultricies pulvinar urna. Ut nec velit sed mauris ultrices pulvinar vitae sed nulla. Quisque a lorem eu purus facilisis suscipit ac vel diam. Aliquam erat volutpat. Donec volutpat pellentesque magna, vitae lacinia diam tempus a. 
+                </div>
+            </div>
+        </div>
+
+        <div class="borrower card">
+            <div class="borrower-info row card-body">
+                <!-- Name, address, Ine -->
+                <!-- <p class="col-12">Detalles del cliente</p> -->
+                <div class="col-12"><strong>Detalles del cliente</strong></div>
+                <div id="name" class="col-6 text-start"></div>
+                <div id="ine" class="col-6 text-end"></div>
+                
+            </div>
+        </div>
+
+        <div class="loan-details card">
+            <div class="card-body row">
+                <div id="start-loan-date" class="col-6 text-start"></div>
+                <div id="generate-loan-date" class="col-6 text-end"></div>
+                <div id="initial-amount"></div>
+                <div id="remaining-amount"></div>
+            </div>
+        </div>
+
+        <div class="transactions card">
+            <div class="card-body row">
+                <div class="loan-payments col-6">
+                    <!-- Loan payments -->
+                    <div><strong>Pagos</strong></div>
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th scope="col">Fecha</th>
+                                <th scope="col">Cantidad</th>
+                            </tr>
+                        </thead>
+                        <tbody id="payment-table-body">
+                            
+                        </tbody>
+                    </table>
+                    <div id="total-payment-amount"></div>
+                </div>
+                <div class="loan-interests col-6">
+                    <!-- Loan interests -->
+                    <div><strong>Intereses</strong></div>
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th scope="col">Fecha</th>
+                                <th scope="col">Cantidad</th>
+                            </tr>
+                        </thead>
+                        <tbody id="interest-table-body">
+                            
+                        </tbody>
+                    </table>
+                    <div id="total-interest-amount"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../scripts/report.js"></script>
+</body>
+</html>

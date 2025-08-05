@@ -6,7 +6,6 @@ import Chart from 'chart.js/auto';
  * @property {number} lender_id - The unique identifier for the lender
  * @property {number} borrower_id - The unique identifier for the borrower
  * @property {number} initial_quantity - The initial amount of the loan
- * @property {number} remaining_quantity - The remaining amount of the loan
  * @property {date} start_date - The date when the loan was created
  * @property {date} finish_date - The date when the loan was finished
  */
@@ -77,6 +76,13 @@ window.api.sendLoanDetails((loan) => {
         const loanStartDate = document.querySelector('#loan-start-date');
         loanStartDate.textContent = `Loan start date: ${loan.start_date}`;
     }getLoanDetails();
+
+    // Generate reports
+    const generateReportButton = document.querySelector('#generate-report');
+    generateReportButton.addEventListener('click', () => {
+        // Load view to print
+        window.api.printReport(loan.id);
+    })
 
     /**
      * Documents.
