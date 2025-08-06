@@ -24,6 +24,7 @@
                 
             </div>
         </nav>
+        <div id="alert-placeholder"></div>
         <div class="row">
             <div class="total-profit col">
                 <div class="card">
@@ -46,13 +47,47 @@
                     </tbody>
                 </table>
             </div>
-            <div class="monthly-profit col">
+            <div class="custom-profit col">
                 <div class="card">
                     <div class="card-body">
-                        <h5 class="card-title">Monthly Profit</h5>
-                        <p id="monthly-amount" class="card-text">asd</p>
+                        <form id="custom-profit-form">
+                            <h5 class="card-title">Custom Date</h5>
+                            <div id="start-date-form">
+                                <label for="start-date" class="form-label">Start Date</label>
+                                <input type="date" name="start-date" id="start-date" class="form-control" required>
+
+                            </div>
+                            <div id="end-date-form">
+                                <label for="end-date" class="form-label">End Date</label>
+                                <input type="date" name="end-date" id="end-date" class="form-control" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Select</button>
+                        </form>
+                        <div id="custom-text">
+
+                        </div>
                     </div>
                 </div>
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Custom Profit</h5>
+                        <div id="custom-amount"></div>
+                    </div>
+                </div>
+
+                <!-- Table to display custom profit by borrower -->
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th scope="col">Name</th>
+                            <th scope="col">Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody id="profit-by-borrower-tbody-custom">
+
+                    </tbody>
+                </table>
+
             </div>
         </div>
         

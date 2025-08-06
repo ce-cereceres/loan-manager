@@ -24,6 +24,8 @@ contextBridge.exposeInMainWorld('api', {
     openLoanDocument: (uuid) => ipcRenderer.invoke('open-loan-document', uuid),
     printReport: (loan_id) => ipcRenderer.send('print-report', loan_id),
     finishedLoadingToPrint: () => ipcRenderer.send('finished-printing'),
+    getCustomProfit: (dates) => ipcRenderer.invoke('get-custom-profit', dates),
+    getProfitByBorrowerCustom: (dates) => ipcRenderer.invoke('get-profit-by-borrower-custom', dates),
     sendAllBorrowers: (callback) => ipcRenderer.on('send-all-borrowers', (event, args) => {
         callback(args);
     }),

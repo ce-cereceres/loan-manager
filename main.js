@@ -273,6 +273,69 @@ ipcMain.on('get-loan-interest', (event, id) => {
     getLoanInterest(id);
 })
 
+ipcMain.handle('get-custom-profit', async (event, dates) => {
+    console.log(dates);
+    args = [
+        dates.start_date,
+        dates.end_date
+    ];   
+    query = 
+    `
+    SELECT 
+        COALESCE(SUM(i.quantity), 0) AS total_custom_interest
+    FROM 
+        interest i
+    WHERE 
+        i.renewal
+    BETWEEN 
+        ? AND ?;
+    `;
+
+    return new Promise((resolve) => {
+        database.get(query, args, function(err, row) {
+            if (err) {
+                resolve({success: false, message: `Error: ${err.message}`, data: null});
+            } else {
+                resolve({success: true, message: `Query Custom Profit Successful`, data: row});
+            }
+        })
+    })
+})
+
+ipcMain.handle('get-profit-by-borrower-custom', async (event, dates) => {
+    args = [
+        dates.start_date,
+        dates.end_date
+    ]
+    return new Promise((resolve) => {
+        query = 
+        `
+        SELECT
+            b.name || ' ' || b.last_name AS full_name,
+            COALESCE(SUM(i.quantity), 0) AS profit
+        FROM
+            borrower b
+        JOIN
+            loan l ON b.id = l.borrower_id
+        JOIN
+            interest i ON l.id = i.loan_id
+        WHERE
+            i.renewal BETWEEN ? AND ?
+        GROUP BY
+            full_name 
+        ORDER BY
+            profit DESC;
+        `;
+        database.all(query, args, function(err, rows) {
+            if (err) {
+                resolve({success: false, message: `Error: ${err.message}`, data: null});
+            } else {
+                resolve({success: true, message: `Query custom table profit successful`, data: rows});
+            }
+        })
+    })
+})
+
 /**
  * @typedef {object} DocumentPath
  * @property {string} title - Title of the file
@@ -546,7 +609,9 @@ ipcMain.handle('get-profit-by-borrower', async (event) => {
         LEFT JOIN 
             borrower b on l.borrower_id = b.id
         GROUP BY 
-            l.borrower_id;`;
+            l.borrower_id
+        ORDER BY 
+            profit DESC;`;
         database.all(query, function(err, rows) {
             if (err) {
                 reject(err);

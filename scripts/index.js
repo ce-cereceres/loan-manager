@@ -16,7 +16,6 @@ viewLoansButton.addEventListener('click', () => {
 async function getTotalProfits() {
     const profitAmount = document.querySelector('#total-amount')
     const profit = await window.api.getAllProfits();
-    console.log(profit);
     
     profitAmount.textContent = `$${profit.total_interest}`;
 }getTotalProfits();
@@ -85,6 +84,61 @@ async function getProfitsByBorrower() {
 
     
 }getProfitsByBorrower();
+
+/**
+ * Custom Profit
+ */
+const customProfitForm = document.querySelector('#custom-profit-form');
+const customStartDate = document.querySelector('#start-date');
+const customEndDate = document.querySelector('#end-date');
+customProfitForm.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const dates = {
+        start_date: customStartDate.value,
+        end_date: customEndDate.value
+    };
+
+    if (dates.start_date < dates.end_date) {
+        const customProfitAmount = await window.api.getCustomProfit(dates);
+        const customAmountLabel = document.querySelector('#custom-amount');
+        customAmountLabel.textContent = `$${customProfitAmount.data.total_custom_interest}`;
+        console.log(customProfitAmount);
+
+        const customTableData = await window.api.getProfitByBorrowerCustom(dates);
+        const customTable = document.querySelector('#profit-by-borrower-tbody-custom');
+        customTable.innerHTML = '';
+
+        for (const borrower of customTableData.data) {
+            const tr = document.createElement('tr');
+            const name = document.createElement('td');
+            const amount = document.createElement('td');
+            name.textContent = borrower.full_name;
+            amount.textContent = `$${borrower.profit}`;
+            tr.appendChild(name);
+            tr.appendChild(amount);
+            customTable.appendChild(tr);
+        }
+        
+        
+    } else if (dates.start_date === dates.end_date) {
+        appendAlert('The dates are equals', 'danger');
+    } else if (dates.start_date > dates.end_date) {
+        appendAlert('The start date is bigger to the end date', 'danger');
+    }    
+})
+
+// Alerts
+const alertPlaceholder = document.querySelector('#alert-placeholder');
+const appendAlert = (message, type) => {
+    const wrapper = document.createElement('div');
+    wrapper.innerHTML = [
+        `<div class="alert alert-${type} alert-dismissible fade show" role="alert">`,
+        `   <div>${message}</div>`,
+        '   <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>',
+        '</div>'
+    ].join('')
+    alertPlaceholder.append(wrapper);
+};
 
 // Navbar
 const navbarHome = document.querySelector('#index-navbar-link');
