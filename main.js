@@ -140,7 +140,7 @@ ipcMain.handle('get-borrower-name', async (event, borrower_id) => {
 
 ipcMain.on('open-loan-window', (event) => {
     const win = BrowserWindow.getFocusedWindow();
-    win.loadFile('./views/loans.html');
+    win.loadFile('./views/get-loans.html');
 })
 
 ipcMain.on('open-loan-form', (event) => {
@@ -231,6 +231,58 @@ ipcMain.handle('get-loan-total-amount', (event, id) => {
         });
     });
     
+})
+
+ipcMain.handle('get-all-loan-details', () => {
+    query = 
+    `
+    WITH CTE_interest AS (
+        SELECT
+            i.loan_id,
+            SUM(i.quantity) AS total_interest
+        FROM
+            interest i 
+        GROUP BY
+            i.loan_id
+    ),
+    CTE_payment AS (
+        SELECT
+            p.loan_id,
+            SUM(p.quantity) AS total_payment
+        FROM
+            payment p 
+        GROUP BY
+            p.loan_id
+    )
+    SELECT
+        l.id,
+        b.name || ' ' || b.last_name AS full_name,
+        b.ine,
+        l.initial_quantity,
+        l.initial_quantity
+        + COALESCE(ci.total_interest, 0)
+        - COALESCE(cp.total_payment, 0) AS total_loan,
+        l.start_date,
+        l.finish_date
+    FROM
+        loan l 
+    LEFT JOIN
+        CTE_interest AS ci ON l.id = ci.loan_id
+    LEFT JOIN
+        CTE_payment AS cp ON l.id = cp.loan_id
+    LEFT JOIN
+        borrower b ON b.id = l.borrower_id
+    `;
+
+    return new Promise((resolve) => {
+        database.all(query, function(err, rows) {
+            if (err) {
+                resolve({success: false, message: `Error: ${err.message}`, data: null});
+            } else {
+                resolve({success: true, message: `Query to get loan details successful`, data: rows});
+            }
+        })
+    })
 })
 
 ipcMain.on('create-payment', (event, data) => {
