@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Borrowers</title>
     <link rel="stylesheet" href="../node_modules/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../css/datatables.min.css">
 </head>
 <body>
     <div class="container-fluid">
@@ -24,6 +25,20 @@
             </div>
         </nav>
         <div id="alert-placeholder"></div>
+        <!-- Test datatable -->
+        <table id="borrowers-table" class="table table-hover">
+            <thead>
+                <tr>
+                    <th scope="col" class="export-col">Name</th>
+                    <th scope="col" class="export-col">Last Name</th>
+                    <th scope="col" class="export-col">INE</th>
+                </tr>
+            </thead>
+            <tbody>
+
+            </tbody>
+        </table>
+
         <table class="table table-hover">
             <thead>
                 <tr>
@@ -42,7 +57,7 @@
 
     </div>
     
-
+    <script src="../scripts/datatables.min.js"></script>
     <script src="../scripts/borrowers.js"></script>
     <script src="../node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
 </body>

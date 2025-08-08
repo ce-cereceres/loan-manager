@@ -18,6 +18,70 @@ document.addEventListener('DOMContentLoaded', async () => {
         const borrowersArray = status.data;
         console.log(borrowersArray);
 
+        let borrowerTable = new DataTable('#borrowers-table', {
+            data: borrowersArray,
+            columns: [
+                {data: 'name'},
+                {data: 'last_name'},
+                {data: 'ine'},
+                {
+                    data: null,
+                    title: 'Actions',
+                    orderable: false,
+                    render: function (data, type, row) {
+                        return `<button class="edit-btn btn btn-info" value="${data.id}">Edit</button> <button class="delete-btn btn btn-danger" value="${data.id}">Delete</button>`;
+                    }
+                }
+            ],
+            layout: {
+                topStart: {
+                    buttons: [
+                        {
+                            extend: 'copy',
+                            exportOptions: {
+                                columns: ['.export-col']
+                            }
+                        },
+                        {
+                            extend: 'excel',
+                            exportOptions: {
+                                columns: ['.export-col']
+                            }
+                        },
+                        {
+                            extend: 'csv',
+                            exportOptions: {
+                                columns: ['.export-col']
+                            }
+                        }
+                    ]
+                }
+            }
+        });
+
+        // Edit button action
+        $('#borrowers-table tbody').on('click', '.edit-btn', function() {
+            let table = $('#borrowers-table').DataTable();
+            let rowData = table.row($(this).closest('tr')).data();
+            window.api.openBorrowerDetails(rowData.id);
+        });
+
+        // Delete Button Action
+        $('#borrowers-table tbody').on('click', '.delete-btn', function() {
+            let table = $('#borrowers-table').DataTable();
+            let rowData = table.row($(this).closest('tr')).data();
+            const userConfirmed = confirm(`Are you sure you want to delete '${rowData.name} ${rowData.last_name}'?`);
+            if (userConfirmed) {
+                const doubleUserConfirmed = confirm('All loans from this borrower will be lost. Are you sure you want to continue?');
+                if (doubleUserConfirmed) {
+                    // Delete the borrower
+                    window.database.deleteBorrower(rowData.id);
+                    // Reloads the page
+                    location.reload();
+                }
+            }
+        });
+        
         for (const borrower of borrowersArray) {
             // Table row
             const tr = document.createElement("tr");
