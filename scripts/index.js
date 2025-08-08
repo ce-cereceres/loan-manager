@@ -1,4 +1,3 @@
-import Chart from 'chart.js/auto';
 // Get "View Clients" button element
 const viewClientsButton = document.querySelector('#view-clients-button');
 // Get "View Loans" button element
@@ -32,56 +31,29 @@ async function getProfitsByBorrower() {
      * @type {array<Borrower>} profitByBorrower
      */
     const profitsByBorrower = await window.api.getProfitByBorrower();
-
-    const profitByBorrowerTable = document.querySelector('#profit-by-borrower-tbody');
+        
+    // Crate array object
+    let profitByBorrowerArray = [];
+    for (const row of profitsByBorrower) {
+        const borrowerArray = [
+            row.full_name,
+            `$${row.profit}`
+        ]
+        
+        profitByBorrowerArray.push(borrowerArray);        
+    }
     
-    // Populate profits by borrower table
-    profitsByBorrower.forEach(borrower => {
-        const tr = document.createElement('tr');
-        const name = document.createElement('td');
-        const profit = document.createElement('td');
-        name.textContent = borrower.full_name;
-        profit.textContent = `$${borrower.profit}`;
-        tr.appendChild(name);
-        tr.appendChild(profit);
-        profitByBorrowerTable.appendChild(tr);
-    });
-
+    new DataTable('#total-profit-table', {
+        data: profitByBorrowerArray,
+        layout: {
+            topStart: {
+                buttons: [
+                    'copy', 'excel', 'csv'
+                ]
+            }
+        }
+    })
     
-    // Pie chart to display profit by borrower
-    // const chartCanvas = document.createElement('canvas');
-    // chartCanvas.id = 'profitByBorrower';
-    // chartCanvas.className = 'profit-by-borrower';
-    // new Chart(
-    //     chartCanvas,
-    //     {
-    //         type: 'pie',
-    //         data: {
-    //             labels: profitsByBorrower.map(row => row.full_name),
-    //             datasets: [
-    //                 {
-    //                     label: 'Profits',
-    //                     data: profitsByBorrower.map(row => row.profit)
-    //                 }
-    //             ]
-    //         },
-    //         options: {
-    //             responsive: true,
-    //             plugins: {
-    //                 legend: {
-    //                     position: 'top',
-    //                     // onClick: null
-    //                 },
-    //                 title: {
-    //                     display: true,
-    //                     text: 'Profits by borrower'
-    //                 }
-    //             }
-    //         }
-    //     }
-    // )
-    // totalProfitDiv.appendChild(chartCanvas);
-
     
 }getProfitsByBorrower();
 
@@ -102,22 +74,56 @@ customProfitForm.addEventListener('submit', async (event) => {
         const customProfitAmount = await window.api.getCustomProfit(dates);
         const customAmountLabel = document.querySelector('#custom-amount');
         customAmountLabel.textContent = `$${customProfitAmount.data.total_custom_interest}`;
-        console.log(customProfitAmount);
 
         const customTableData = await window.api.getProfitByBorrowerCustom(dates);
-        const customTable = document.querySelector('#profit-by-borrower-tbody-custom');
-        customTable.innerHTML = '';
+        // const customTable = document.querySelector('#profit-by-borrower-tbody-custom');
+        // customTable.innerHTML = '';
 
+        let customTableArray = [];
         for (const borrower of customTableData.data) {
-            const tr = document.createElement('tr');
-            const name = document.createElement('td');
-            const amount = document.createElement('td');
-            name.textContent = borrower.full_name;
-            amount.textContent = `$${borrower.profit}`;
-            tr.appendChild(name);
-            tr.appendChild(amount);
-            customTable.appendChild(tr);
+            // const tr = document.createElement('tr');
+            // const name = document.createElement('td');
+            // const amount = document.createElement('td');
+            // name.textContent = borrower.full_name;
+            // amount.textContent = `$${borrower.profit}`;
+            // tr.appendChild(name);
+            // tr.appendChild(amount);
+            // customTable.appendChild(tr);
+            const borrowerArray = [
+                borrower.full_name,
+                `$${borrower.profit}`
+            ]
+            customTableArray.push(borrowerArray)
         }
+
+        // If the table exists, delete it
+        const customProfitTableCheck = $('#custom-profit-table').DataTable();
+        if (customProfitTableCheck){
+            customProfitTableCheck.destroy(true);
+        }
+
+        const customProfitTable = document.createElement('table');
+        customProfitTable.id = 'custom-profit-table'
+        customProfitTable.classList.add('table', 'table-hover');
+        customProfitTable.innerHTML = [
+            '<thead>',
+            '   <tr>',
+            '       <th scope="col">Name</th>',
+            '       <th scope="col">Amount</th>',
+            '   </tr>',
+            '</thead>',
+            '<tbody>',
+            '</tbody>'
+        ].join('');
+
+        const tableDiv = document.querySelector('#custom-profit-div');
+        tableDiv.appendChild(customProfitTable);
+
+        new DataTable(customProfitTable, {
+            data: customTableArray
+        })
+
+        
         
         
     } else if (dates.start_date === dates.end_date) {
