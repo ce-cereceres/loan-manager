@@ -80,10 +80,19 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
 
     // Delete Button Action
-    $('#loans-table tbody').on('click', '.delete-btn', function() {
+    $('#loans-table tbody').on('click', '.delete-btn', async function() {
         let table = $('#loans-table').DataTable();
         let rowData = table.row($(this).closest('tr')).data();
-        console.log(rowData);
+        const userConfirm = confirm('Are you sure you want to delete the loan. All payments and interest will be lost');
+        if (userConfirm) {
+            const status = await window.database.deleteLoan(rowData.id);
+            if (!status.success) {
+                appendAlert(status.message, 'danger');
+            } else {
+                appendAlert(`Loan deleted successfuly`, 'success');
+                window.api.openLoanWindow();
+            }
+        }
     });
 });
 

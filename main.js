@@ -220,6 +220,26 @@ ipcMain.handle('update-loan', async (event, data) => {
     })
 })
 
+ipcMain.handle('delete-loan', async (event, id) => {
+    query = 
+    `
+    DELETE FROM 
+        loan 
+    WHERE 
+        id = ?
+    `;
+    return new Promise((resolve) => {
+        database.run(query, id, function(err) {
+            if (err) {
+                resolve({success: false, message: `Error: ${err.message}`});
+            } else if (this.changes > 0) {
+                resolve({success: true, message: `Row(s) affected = ${this.changes}. Loan with id = ${id} deleted sucessfuly`});
+            }
+        })
+    })
+    
+})
+
 ipcMain.handle('get-loans', async (event, id) => {
     query = `SELECT * FROM loan WHERE borrower_id = ?`;
     return new Promise((resolve) => {

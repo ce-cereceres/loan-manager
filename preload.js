@@ -73,6 +73,7 @@ contextBridge.exposeInMainWorld('database', {
     // Loan
     createLoan: (data) => ipcRenderer.invoke('create-loan', data),
     updateLoan: (data) => ipcRenderer.invoke('update-loan', data),
+    deleteLoan: (id) => ipcRenderer.invoke('delete-loan', id),
     // Payment
     createPayment: (data) => ipcRenderer.send('create-payment', data),
     deletePayment: (id) => ipcRenderer.send('delete-payment', id),
