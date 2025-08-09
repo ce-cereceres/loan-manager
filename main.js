@@ -148,6 +148,31 @@ ipcMain.on('open-loan-form', (event) => {
     win.loadFile('./views/loan-form.html');
 })
 
+ipcMain.on('open-loan-edit', (event, id) => {
+    const win = BrowserWindow.getFocusedWindow();
+    query = 
+    `
+    SELECT 
+        l.id,
+        l.initial_quantity,
+        l.start_date
+    FROM 
+        loan l 
+    WHERE
+        l.id = ?
+    `;
+    database.get(query, id, function(err, row) {
+        if (err) {
+            console.error(err.message);
+        } else {
+            // Load edit-loan view and send selected loan details to edit
+            win.loadFile('./views/edit-loan.html').then(() => {
+                win.webContents.send('send-loan-edit-details', row);
+            })
+        }
+    })
+})
+
 ipcMain.handle('create-loan', async (event, data) => {
     console.log(data);
     // For development only
@@ -171,6 +196,29 @@ ipcMain.handle('create-loan', async (event, data) => {
         });
     });
 });
+
+ipcMain.handle('update-loan', async (event, data) => {
+    query = 
+    `
+    UPDATE 
+        loan 
+    SET 
+        initial_quantity = ?, 
+        start_date = ? 
+    WHERE 
+        id = ?
+    `;
+    
+    return new Promise((resolve) => {
+        database.run(query, data, function(err) {
+            if (err) {
+                resolve({success: false, message: `Error: ${err.message}`});
+            } else if (this.changes > 0) {
+                resolve({success: true, message: `Row(s) affected = ${this.changes}. Loan with id = ${data[2]} updated`});
+            }
+        })
+    })
+})
 
 ipcMain.handle('get-loans', async (event, id) => {
     query = `SELECT * FROM loan WHERE borrower_id = ?`;

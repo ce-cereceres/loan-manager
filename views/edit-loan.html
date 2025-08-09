@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Loan</title>
+    <link rel="stylesheet" href="../node_modules/bootstrap/dist/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container-fluid">
+        <nav class="navbar navbar-expand-lg bg-body-tertiary">
+            <div class="container-fluid">
+                <a href="#" id="navbar-brand" class="navbar-brand">Loan Manager</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <div class="navbar-nav">
+                        <a href="#" class="nav-link" id="index-navbar-link">Home</a>
+                        <a href="#" class="nav-link" id="borrowers-navbar-link">Clients</a>
+                        <a href="#" class="nav-link" id="loans-navbar-link">Loans</a>
+                    </div>
+                </div>
+                
+            </div>
+        </nav>
+
+        <div id="alert-placeholder"></div>
+        <div class="edit-title">
+            <h5>Edit Loan</h5>
+        </div>
+        <form id="update-loan-form">
+            <div class="input-group my-3">
+                <span class="input-group-text">$</span>
+                <div class="form-floating">
+                    
+                    <input type="number" name="initial-quantity" id="initial-quantity" class="form-control" required>
+                    <label for="initial-quantity">Amount</label>
+                </div>
+
+                <span class="input-group-text">Date</span>
+                <div class="form-floating">
+                    
+                    <input type="datetime-local" name="start-date" id="start-date" class="form-control" required>
+                    <label for="start-date" class="form-label">Start Date</label>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-success">Update</button>
+        </form>
+
+    </div>
+
+    <script>
+        // 
+        window.api.sendLoanEditDetails((loan) => {
+            // Get Form elements
+            const amount = document.querySelector('#initial-quantity');
+            const date = document.querySelector('#start-date');
+            // Populate form elements
+            console.log(loan);
+            amount.value = loan.initial_quantity;
+            date.value = loan.start_date;
+
+            // updateLoan
+            const updateLoanForm = document.querySelector('#update-loan-form');
+            updateLoanForm.addEventListener('submit', async (event) => {
+                event.preventDefault();
+
+                const dataToUpdate = [
+                    amount.value,
+                    date.value,
+                    loan.id
+                ]
+                
+                const status = await window.database.updateLoan(dataToUpdate);
+
+                if (!status.success) {
+                    appendAlert(status.message, 'danger');
+                } else {
+                    console.log(status.message);
+                    // Redirect to loan window
+                    window.api.openLoanWindow();
+                }
+            })
+        })
+
+        // Alerts
+        const alertPlaceholder = document.querySelector('#alert-placeholder');
+        const appendAlert = (message, type) => {
+            const wrapper = document.createElement('div');
+            wrapper.innerHTML = [
+                `<div class="alert alert-${type} alert-dismissible fade show" role="alert">`,
+                `   <div>${message}</div>`,
+                '   <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>',
+                '</div>'
+            ].join('')
+            alertPlaceholder.append(wrapper);
+        };
+
+        // Navbar
+        const navbarHome = document.querySelector('#index-navbar-link');
+        const navbarBorrowers = document.querySelector('#borrowers-navbar-link');
+        const navbarLoans = document.querySelector('#loans-navbar-link');
+        const navbarBrand = document.querySelector('#navbar-brand');
+        navbarBrand.addEventListener('click', (event) => {
+            event.preventDefault();
+            window.api.openIndexWindow();
+        })
+        navbarHome.addEventListener('click', (event) => {
+            event.preventDefault();
+            window.api.openIndexWindow()
+        })
+        navbarBorrowers.addEventListener('click', (event) => {
+            event.preventDefault();
+            window.api.openBorrowerWindow();
+        })
+        navbarLoans.addEventListener('click', (event) => {
+            event.preventDefault();
+            window.api.openLoanWindow();
+        })
+    </script>
+    <script src="../node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
+</body>
+</html>

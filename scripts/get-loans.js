@@ -75,7 +75,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     $('#loans-table tbody').on('click', '.edit-btn', function() {
         let table = $('#loans-table').DataTable();
         let rowData = table.row($(this).closest('tr')).data();
-        console.log(rowData);
+        window.api.openLoanEdit(rowData.id);
         
     });
 
