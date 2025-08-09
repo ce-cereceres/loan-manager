@@ -18,7 +18,9 @@ document.addEventListener('DOMContentLoaded', async () => {
      * @type {Query}
      */
     const loans = await window.api.getAllLoanDetails();
-    loansJson = loans.data;
+    const loansJson = loans.data;
+    console.log(loansJson);
+    
     
     let loanTable = new DataTable('#loans-table', {
         data: loansJson,
@@ -35,6 +37,18 @@ document.addEventListener('DOMContentLoaded', async () => {
                 data: 'total_loan',
                 render: function(data, type) {
                     return `$${data}`;
+                }
+            },
+            {
+                data: 'is_closed',
+                render: function(data, type) {
+                    if (data === 0) {
+                        return 'Active';
+                    } else if (data === 1) {
+                        return 'Closed';
+                    } else {
+                        return 'Undefined';
+                    }
                 }
             },
             {

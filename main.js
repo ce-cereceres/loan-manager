@@ -331,7 +331,8 @@ ipcMain.handle('get-all-loan-details', () => {
         + COALESCE(ci.total_interest, 0)
         - COALESCE(cp.total_payment, 0) AS total_loan,
         l.start_date,
-        l.finish_date
+        l.finish_date,
+        l.is_closed
     FROM
         loan l 
     LEFT JOIN
@@ -805,7 +806,7 @@ ipcMain.on('finished-printing', (event) => {
 })
 
 // Create database connection
-const database = new sqlite3.Database('./test.sqlite3', (err) => {
+const database = new sqlite3.Database('./loans.sqlite3', (err) => {
     if (err) {
         console.error('Database opening error: ', err);
     }
