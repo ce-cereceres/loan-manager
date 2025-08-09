@@ -136,4 +136,4 @@ dist
 .pnp.*
 
 # Sqlite3 database
-test.sqlite3
+*.sqlite3
