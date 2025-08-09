@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS payment (
     quantity decimal(10,2) NOT NULL,
     payment_date date NOT NULL,
     FOREIGN KEY (loan_id)
-        REFERENCES loan (id)
+        REFERENCES loan (id) ON DELETE CASCADE
 );
 `;
 
@@ -44,7 +44,7 @@ CREATE TABLE IF NOT EXISTS interest (
     quantity decimal(10,2) NOT NULL,
     renewal date NOT NULL,
     FOREIGN KEY (loan_id)
-        REFERENCES loan (id)
+        REFERENCES loan (id) ON DELETE CASCADE
 );
 `;
 
@@ -56,12 +56,13 @@ CREATE TABLE IF NOT EXISTS loan (
     lender_id integer NOT NULL,
     borrower_id integer NOT NULL,
     initial_quantity decimal(10,2) NOT NULL,
+    is_closed BOOLEAN DEFAULT FALSE,
     start_date date NOT NULL,
     finish_date date,
     FOREIGN KEY (lender_id)
         REFERENCES lender (id),
     FOREIGN KEY (borrower_id)
-        REFERENCES borrower (id)
+        REFERENCES borrower (id) ON DELETE CASCADE
 );
 `;
 
@@ -74,7 +75,7 @@ CREATE TABLE IF NOT EXISTS kyc (
     type varchar(30),
     uuid varchar(50),
     FOREIGN KEY (loan_id)
-        REFERENCES loan (id)
+        REFERENCES loan (id) ON DELETE CASCADE
 );
 `;
 
