@@ -67,13 +67,16 @@ window.api.sendLoanDetails((loan) => {
             closeLoanButton.textContent = 'Close Loan';
             closeLoanButton.classList.add('btn', 'btn-danger');
             closeLoanButton.addEventListener('click', async () => {
-                const status = await window.api.closeLoan(loan.id);
-                if (!status.success) {
-                    appendAlert(status.message, 'danger');
-                } else {
-                    appendAlert(status.message, 'success');
-                    // Refresh page
-                    window.api.getLoanDetails(loan.id);
+                const userConfirmed = confirm('Are you sure you want to close the loan?');
+                if (userConfirmed) {
+                    const status = await window.api.closeLoan(loan.id);
+                    if (!status.success) {
+                        appendAlert(status.message, 'danger');
+                    } else {
+                        appendAlert(status.message, 'success');
+                        // Refresh page
+                        window.api.getLoanDetails(loan.id);
+                    }
                 }
             });
             loanButtonsDiv.appendChild(closeLoanButton);
@@ -85,13 +88,16 @@ window.api.sendLoanDetails((loan) => {
             openLoanButton.textContent = 'Open Loan';
             openLoanButton.classList.add('btn', 'btn-primary');
             openLoanButton.addEventListener('click', async () => {
-                const status = await window.api.openLoan(loan.id);
-                if (!status.success) {
-                    appendAlert(status.message, 'danger');
-                } else {
-                    appendAlert(status.message, 'success');
-                    // Refresh page
-                    window.api.getLoanDetails(loan.id);
+                const userConfirmed = confirm('Are you sure you want to open the loan?');
+                if (userConfirmed) {
+                    const status = await window.api.openLoan(loan.id);
+                    if (!status.success) {
+                        appendAlert(status.message, 'danger');
+                    } else {
+                        appendAlert(status.message, 'success');
+                        // Refresh page
+                        window.api.getLoanDetails(loan.id);
+                    }
                 }
             });
             loanButtonsDiv.appendChild(openLoanButton);
