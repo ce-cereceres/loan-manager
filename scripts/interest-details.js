@@ -40,3 +40,38 @@ window.api.sendInterestDetails((interest) => {
         window.api.getLoanDetails(interest.loan_id);
     })
 })
+
+// Alerts
+const alertPlaceholder = document.querySelector('#alert-placeholder');
+const appendAlert = (message, type) => {
+    const wrapper = document.createElement('div');
+    wrapper.innerHTML = [
+        `<div class="alert alert-${type} alert-dismissible fade show" role="alert">`,
+        `   <div>${message}</div>`,
+        '   <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>',
+        '</div>'
+    ].join('')
+    alertPlaceholder.append(wrapper);
+};
+
+// Navbar
+const navbarHome = document.querySelector('#index-navbar-link');
+const navbarBorrowers = document.querySelector('#borrowers-navbar-link');
+const navbarLoans = document.querySelector('#loans-navbar-link');
+const navbarBrand = document.querySelector('#navbar-brand');
+navbarBrand.addEventListener('click', (event) => {
+    event.preventDefault();
+    window.api.openIndexWindow();
+})
+navbarHome.addEventListener('click', (event) => {
+    event.preventDefault();
+    window.api.openIndexWindow()
+})
+navbarBorrowers.addEventListener('click', (event) => {
+    event.preventDefault();
+    window.api.openBorrowerWindow();
+})
+navbarLoans.addEventListener('click', (event) => {
+    event.preventDefault();
+    window.api.openLoanWindow();
+})
