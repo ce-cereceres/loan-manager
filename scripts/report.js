@@ -53,10 +53,18 @@ window.api.sendPrintDetails((loan) => {
             `${borrowerName.data.name} ${borrowerName.data.last_name}`
         ].join('');
         // Borrower INE
-        ine.innerHTML = [
-            '<strong>INE:</strong> ',
-            `${borrowerName.data.ine}`
-        ].join('');
+        if (borrowerName.data.ine === null) {
+            ine.innerHTML = [
+                '<strong>INE:</strong> ',
+                `No registrada`
+            ].join('');
+        } else {
+            ine.innerHTML = [
+                '<strong>INE:</strong> ',
+                `${borrowerName.data.ine}`
+            ].join('');
+        }
+        
         // "Loan" amount label
         remainingAmount.innerHTML = [
             '<strong>Cantidad Restante:</strong> ',
