@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>New way to get Loans</title>
+    <title>Loans</title>
     <link rel="stylesheet" href="../node_modules/bootstrap/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="../css/datatables.min.css">
 </head>
@@ -26,8 +26,11 @@
             </div>
         </nav>
         <div id="alert-placeholder"></div>
-        <button type="button" id="new-loan-button" class="btn btn-success">New Loan</button>
+        <div class="buttons my-3">
+            <button type="button" id="new-loan-button" class="btn btn-success">New Loan</button>
+        </div>
         <div id="borrowers-container">
+            <!-- Borrower datatable -->
             <table id="loans-table" class="table table-hover">
                 <thead>
                     <tr>
