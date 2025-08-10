@@ -61,7 +61,9 @@ window.api.sendLoanDetails((loan) => {
         const loanStatus = document.querySelector('#loan-status');
         const loanButtonsDiv = document.querySelector('#loan-buttons');
         if (loan.is_closed === 0) {
-            loanStatus.textContent = 'Active';
+            loanStatus.innerHTML = [
+                '<span class="badge bg-success">Active</span>'
+            ].join('')
             // Button to close loan
             const closeLoanButton = document.createElement('button');
             closeLoanButton.textContent = 'Close Loan';
@@ -82,7 +84,16 @@ window.api.sendLoanDetails((loan) => {
             loanButtonsDiv.appendChild(closeLoanButton);
 
         } else if (loan.is_closed === 1) {
-            loanStatus.textContent = 'Closed';
+            loanStatus.innerHTML = [
+                '<span class="badge bg-danger">Closed</span>'
+            ].join('');
+            // Loan finish date label
+            const finishDateDiv = document.querySelector('#close-date');
+            const finishDate = new Date(loan.finish_date).toLocaleString();
+            finishDateDiv.innerHTML = [
+                '<strong>Finish Date: </strong>',
+                `${finishDate}`
+            ].join('');
             // Button to open loan
             const openLoanButton = document.createElement('button');
             openLoanButton.textContent = 'Open Loan';
@@ -104,24 +115,32 @@ window.api.sendLoanDetails((loan) => {
         } else {
             loanStatus.textContent = 'Undefined';
         }
-        // "Loan" id label DEBUG
-        const loanId = document.querySelector('#loan-id');
-        loanId.textContent = loan.id;
         // Borrower name
         const borrowerNameLabel = document.querySelector('#borrower-name');
-        borrowerNameLabel.textContent = `Name: ${borrowerName.data.name} ${borrowerName.data.last_name}`;
-        console.log(borrowerName.data);
+        borrowerNameLabel.innerHTML = [
+            '<strong>Name:</strong> ',
+            `${borrowerName.data.name} ${borrowerName.data.last_name}`
+        ].join('');
         // Loan initial amount
         const loanInitialAmount = document.querySelector('#loan-initial-amount');
-        loanInitialAmount.textContent = `Initial amount: ${loan.initial_quantity}`
+        loanInitialAmount.innerHTML = [
+            '<strong>Initial Amount:</strong> ',
+            `$${loan.initial_quantity}`
+        ].join('');
         // "Loan" amount label
         const loanAmount = document.querySelector('#loan-amount');
-        loanAmount.textContent = `Remaining amount: ${loanAmountData.data.total_loan}`;
-        console.log(loanAmountData.data);
+        loanAmount.innerHTML = [
+            '<strong>Remaining Amount:</strong> ',
+            `$${loanAmountData.data.total_loan}`
+        ].join('');
         
         // "Loan" start date label
         const loanStartDate = document.querySelector('#loan-start-date');
-        loanStartDate.textContent = `Loan start date: ${loan.start_date}`;
+        const date = new Date(loan.start_date).toLocaleString();
+        loanStartDate.innerHTML = [
+            '<strong>Start Date: </strong>',
+            `${date}`
+        ].join('');
     }getLoanDetails();
 
     // Generate reports Button
