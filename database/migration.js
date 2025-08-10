@@ -1,14 +1,5 @@
 // This file is used to generate the database structure
 
-// LENDER
-const lender = 
-`
-CREATE TABLE IF NOT EXISTS lender (
-    id integer NOT NULL PRIMARY KEY,
-    name varchar(500) NOT NULL
-);
-`;
-
 // PAYMENT
 const payment = 
 `
@@ -53,14 +44,11 @@ const loan =
 `
 CREATE TABLE IF NOT EXISTS loan (
     id integer NOT NULL PRIMARY KEY,
-    lender_id integer NOT NULL,
     borrower_id integer NOT NULL,
     initial_quantity decimal(10,2) NOT NULL,
     is_closed BOOLEAN DEFAULT FALSE,
     start_date date NOT NULL,
     finish_date date,
-    FOREIGN KEY (lender_id)
-        REFERENCES lender (id),
     FOREIGN KEY (borrower_id)
         REFERENCES borrower (id) ON DELETE CASCADE
 );
@@ -80,4 +68,4 @@ CREATE TABLE IF NOT EXISTS kyc (
 `;
 
 // Exports the variables necesaries to create the database structure to main proccess
-module.exports = { lender, payment, borrower, interest, loan, kyc }
+module.exports = { payment, borrower, interest, loan, kyc }

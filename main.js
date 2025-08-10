@@ -175,16 +175,13 @@ ipcMain.on('open-loan-edit', (event, id) => {
 
 ipcMain.handle('create-loan', async (event, data) => {
     console.log(data);
-    // For development only
-    const lenderId = '1'; 
     const args = [
-        lenderId,
         data.borrower_id,
         data.initial_quantity,
         data.start_loan_date
     ];
     console.log(args);
-    const query = `INSERT INTO loan (lender_id, borrower_id, initial_quantity, start_date) VALUES (?,?,?,?)`;
+    const query = `INSERT INTO loan (borrower_id, initial_quantity, start_date) VALUES (?,?,?,?)`;
 
     return new Promise((resolve) => {
         database.run(query, args, function(err) {
@@ -864,9 +861,6 @@ const database = new sqlite3.Database('./loans.sqlite3', (err) => {
     }
     console.log('Connected to SQLite3 database');
     database.serialize(() => {
-        database.run(migrations.lender);
-        console.log('lender table created successful');
-
         database.run(migrations.borrower);
         console.log('borrower table created successful');
 
@@ -881,9 +875,7 @@ const database = new sqlite3.Database('./loans.sqlite3', (err) => {
 
         database.run(migrations.kyc);
         console.log('KYC table created successfully');
-
-        database.run(`INSERT INTO lender (name) VALUES ('Carlos')`);
-
+        
         database.run('PRAGMA foreign_keys = ON;');
     })
     // database.close((err) => {
