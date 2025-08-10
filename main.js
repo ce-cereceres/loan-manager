@@ -181,7 +181,7 @@ ipcMain.handle('create-loan', async (event, data) => {
         data.start_loan_date
     ];
     console.log(args);
-    const query = `INSERT INTO loan (borrower_id, initial_quantity, start_date) VALUES (?,?,?,?)`;
+    const query = `INSERT INTO loan (borrower_id, initial_quantity, start_date) VALUES (?,?,?)`;
 
     return new Promise((resolve) => {
         database.run(query, args, function(err) {
