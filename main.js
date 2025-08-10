@@ -240,6 +240,58 @@ ipcMain.handle('delete-loan', async (event, id) => {
     
 })
 
+ipcMain.handle('close-loan', async (event, id) => {
+    // Get time in YYYY-MM-DD Format
+    // Using 'sv-SE' for ISO-like output
+    const timestamp = new Date().toISOString();
+    
+    const args = [
+        timestamp,
+        id
+    ]
+    query = 
+    `
+    UPDATE 
+        loan 
+    SET 
+        is_closed = 1,
+        finish_date = ?
+    WHERE 
+        id = ?
+    `;
+    return new Promise((resolve) => {
+        database.run(query, args, function(err) {
+            if (err) {
+                resolve({success: false, message: `Error: ${err.message}`});
+            } else {
+                resolve({success: true, message: `Closed loan sucessfully`});
+            }
+        })
+    })
+})
+
+ipcMain.handle('open-loan', async (event, id) => {    
+    query = 
+    `
+    UPDATE 
+        loan 
+    SET 
+        is_closed = 0,
+        finish_date = null
+    WHERE 
+        id = ?
+    `;
+    return new Promise((resolve) => {
+        database.run(query, id, function(err) {
+            if (err) {
+                resolve({success: false, message: `Error: ${err.message}`});
+            } else {
+                resolve({success: true, message: `Open loan sucessfully`});
+            }
+        })
+    })
+})
+
 ipcMain.handle('get-loans', async (event, id) => {
     query = `SELECT * FROM loan WHERE borrower_id = ?`;
     return new Promise((resolve) => {
@@ -830,7 +882,9 @@ const database = new sqlite3.Database('./loans.sqlite3', (err) => {
         database.run(migrations.kyc);
         console.log('KYC table created successfully');
 
-        database.run(`INSERT INTO lender (name) VALUES ('Carlos')`)
+        database.run(`INSERT INTO lender (name) VALUES ('Carlos')`);
+
+        database.run('PRAGMA foreign_keys = ON;');
     })
     // database.close((err) => {
     //     if (err == null) {

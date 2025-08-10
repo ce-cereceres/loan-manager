@@ -12,6 +12,8 @@ contextBridge.exposeInMainWorld('api', {
     getLoanPayment: (id) => ipcRenderer.send('get-loan-payment', id),
     getLoanTotalAmount: (id) => ipcRenderer.invoke('get-loan-total-amount', id),
     openLoanEdit: (id) => ipcRenderer.send('open-loan-edit', id),
+    closeLoan: (id) => ipcRenderer.invoke('close-loan', id),
+    openLoan: (id) => ipcRenderer.invoke('open-loan', id),
     openPaymentDetails: (id) => ipcRenderer.send('open-payment-details', id),
     getLoanInterest: (id) => ipcRenderer.send('get-loan-interest', id),
     openInterestDetails: (id) => ipcRenderer.send('open-interest-details', id),

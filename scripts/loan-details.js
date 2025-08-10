@@ -57,6 +57,47 @@ window.api.sendLoanDetails((loan) => {
         if (!loanAmountData.success) {
             appendAlert(loanAmountData.message, 'danger');
         }
+        // Loan status
+        const loanStatus = document.querySelector('#loan-status');
+        const loanButtonsDiv = document.querySelector('#loan-buttons');
+        if (loan.is_closed === 0) {
+            loanStatus.textContent = 'Active';
+            // Button to close loan
+            const closeLoanButton = document.createElement('button');
+            closeLoanButton.textContent = 'Close Loan';
+            closeLoanButton.classList.add('btn', 'btn-danger');
+            closeLoanButton.addEventListener('click', async () => {
+                const status = await window.api.closeLoan(loan.id);
+                if (!status.success) {
+                    appendAlert(status.message, 'danger');
+                } else {
+                    appendAlert(status.message, 'success');
+                    // Refresh page
+                    window.api.getLoanDetails(loan.id);
+                }
+            });
+            loanButtonsDiv.appendChild(closeLoanButton);
+
+        } else if (loan.is_closed === 1) {
+            loanStatus.textContent = 'Closed';
+            // Button to open loan
+            const openLoanButton = document.createElement('button');
+            openLoanButton.textContent = 'Open Loan';
+            openLoanButton.classList.add('btn', 'btn-primary');
+            openLoanButton.addEventListener('click', async () => {
+                const status = await window.api.openLoan(loan.id);
+                if (!status.success) {
+                    appendAlert(status.message, 'danger');
+                } else {
+                    appendAlert(status.message, 'success');
+                    // Refresh page
+                    window.api.getLoanDetails(loan.id);
+                }
+            });
+            loanButtonsDiv.appendChild(openLoanButton);
+        } else {
+            loanStatus.textContent = 'Undefined';
+        }
         // "Loan" id label DEBUG
         const loanId = document.querySelector('#loan-id');
         loanId.textContent = loan.id;
@@ -77,7 +118,7 @@ window.api.sendLoanDetails((loan) => {
         loanStartDate.textContent = `Loan start date: ${loan.start_date}`;
     }getLoanDetails();
 
-    // Generate reports
+    // Generate reports Button
     const generateReportButton = document.querySelector('#generate-report');
     generateReportButton.addEventListener('click', () => {
         // Load view to print
