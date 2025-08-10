@@ -33,14 +33,12 @@
             <div class="input-group my-3">
                 <span class="input-group-text">$</span>
                 <div class="form-floating">
-                    
                     <input type="number" name="initial-quantity" id="initial-quantity" class="form-control" required>
                     <label for="initial-quantity">Amount</label>
                 </div>
 
                 <span class="input-group-text">Date</span>
                 <div class="form-floating">
-                    
                     <input type="datetime-local" name="start-date" id="start-date" class="form-control" required>
                     <label for="start-date" class="form-label">Start Date</label>
                 </div>
@@ -57,18 +55,26 @@
             const amount = document.querySelector('#initial-quantity');
             const date = document.querySelector('#start-date');
             // Populate form elements
-            console.log(loan);
+            const localDate = new Date(loan.start_date);
+            const year = localDate.getFullYear();
+            const month = String(localDate.getMonth() + 1).padStart(2, '0');
+            const day = String(localDate.getDate()).padStart(2, '0');
+            const hours = String(localDate.getHours()).padStart(2, '0');
+            const minutes = String(localDate.getMinutes()).padStart(2, '0');
+            const localDateString = `${year}-${month}-${day}T${hours}:${minutes}`;
+            
             amount.value = loan.initial_quantity;
-            date.value = loan.start_date;
+            date.value = localDateString;
 
             // updateLoan
             const updateLoanForm = document.querySelector('#update-loan-form');
             updateLoanForm.addEventListener('submit', async (event) => {
                 event.preventDefault();
+                const fixedDate = new Date(date.value).toISOString();
 
                 const dataToUpdate = [
                     amount.value,
-                    date.value,
+                    fixedDate,
                     loan.id
                 ]
                 
