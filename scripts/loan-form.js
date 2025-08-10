@@ -20,15 +20,16 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 document.addEventListener('submit', async (event) => {
     event.preventDefault();
+    // Convert local datetime to UTC
+    const correctedStartLoanDate = new Date(startLoanDate.value).toISOString();
 
     const loanDetails = {
         borrower_id: borrowerSelect.value,
         initial_quantity: loanInitialQuantity.value,
-        start_loan_date: startLoanDate.value
+        start_loan_date: correctedStartLoanDate
     }
 
     const status = await window.database.createLoan(loanDetails);
-    console.log(status);
     
     if (!status.success) {
         appendAlert(status.message, 'danger')
