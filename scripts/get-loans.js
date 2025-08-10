@@ -81,7 +81,31 @@ document.addEventListener('DOMContentLoaded', async () => {
         columnControl: [
             ['orderAsc', 'orderDesc', 'search']
         ],
-        responsive: true
+        responsive: true,
+        layout: {
+            topStart: {
+                buttons: [
+                    {
+                        extend: 'copy',
+                        exportOptions: {
+                            columns: ['.export-col']
+                        }
+                    },
+                    {
+                        extend: 'excel',
+                        exportOptions: {
+                            columns: ['.export-col']
+                        }
+                    },
+                    {
+                        extend: 'csv',
+                        exportOptions: {
+                            columns: ['.export-col']
+                        }
+                    }
+                ]
+            }
+        }
     })
     // View Button Action
     $('#loans-table tbody').on('click', '.view-btn', function() {
