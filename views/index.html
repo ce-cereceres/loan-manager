@@ -53,15 +53,17 @@
                     <div class="card-body">
                         <form id="custom-profit-form">
                             <h5 class="card-title">Custom Date</h5>
-                            <div id="start-date-form">
-                                <label for="start-date" class="form-label">Start Date</label>
-                                <input type="date" name="start-date" id="start-date" class="form-control" required>
-
+                            <div class="input-group my-3">
+                                <div id="start-date-form" class="form-floating">
+                                    <input type="date" name="start-date" id="start-date" class="form-control" required>
+                                    <label for="start-date">Start Date</label>
+                                </div>
+                                <div id="end-date-form" class="form-floating">
+                                    <input type="date" name="end-date" id="end-date" class="form-control" required>
+                                    <label for="end-date">End Date</label>
+                                </div>
                             </div>
-                            <div id="end-date-form">
-                                <label for="end-date" class="form-label">End Date</label>
-                                <input type="date" name="end-date" id="end-date" class="form-control" required>
-                            </div>
+                            
                             <button type="submit" class="btn btn-primary">Select</button>
                         </form>
                         <div id="custom-text">
@@ -82,8 +84,10 @@
             </div>
         </div>
         
-        <button type="button" id="view-clients-button" class="btn btn-primary">View Borrowers</button>
-        <button type="button" id="view-loans-button" class="btn btn-primary">View Loans</button>
+        <div class="my-5">
+            <button type="button" id="view-clients-button" class="btn btn-primary">View Borrowers</button>
+            <button type="button" id="view-loans-button" class="btn btn-primary">View Loans</button>
+        </div>
     </div>
     
 
