@@ -16,7 +16,7 @@ window.api.sendPrintDetails((loan) => {
     const startDate = new Date(loan.start_date);
     const startDateString = startDate.toDateString();
     startLoanDate.innerHTML = [
-        '<strong>Fecha de inicio del prestamo:</strong>',
+        '<strong>Fecha de inicio del préstamo:</strong>',
         `<div>${startDateString}</div>`
     ].join('');
     // The date when the report is being generated
@@ -25,7 +25,7 @@ window.api.sendPrintDetails((loan) => {
     const timestamp = new Date();
     const timestampString = timestamp.toDateString();
     generateLoanDate.innerHTML = [
-        '<strong>Fecha de generacion del reporte:</strong>',
+        '<strong>Fecha de generación del reporte:</strong>',
         `<div>${timestampString}</div>`
     ].join('');
     const initialAmount = document.querySelector('#initial-amount');
