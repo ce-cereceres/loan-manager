@@ -50,7 +50,11 @@
         // Form submit
         borrowerForm.addEventListener('submit', async (event) => {
             event.preventDefault();
-            const borrowerDetails = [nameBorrower.value, lastName.value, ine.value];
+            let ineData = ine.value;
+            if (ine.value === '') {
+                ineData = null;
+            }
+            const borrowerDetails = [nameBorrower.value, lastName.value, ineData];
             const status = await window.database.createBorrower(borrowerDetails);
 
             if (!status.success) {
