@@ -120,11 +120,15 @@ customProfitForm.addEventListener('submit', async (event) => {
         tableDiv.appendChild(customProfitTable);
 
         new DataTable(customProfitTable, {
-            data: customTableArray
+            data: customTableArray,
+            layout: {
+                topStart: {
+                    buttons: [
+                        'copy', 'excel', 'csv'
+                    ]
+                }
+            }
         })
-
-        
-        
         
     } else if (dates.start_date === dates.end_date) {
         appendAlert('The dates are equals', 'danger');
