@@ -11,6 +11,7 @@ const createWindow = () => {
     const win = new BrowserWindow({
         width: 1280,
         height: 720,
+        autoHideMenuBar: true,
         webPreferences: {
             preload: path.join(__dirname, 'preload.js'),
             contextIsolation: true,
@@ -19,9 +20,6 @@ const createWindow = () => {
     })
 
     win.loadFile('views/index.html')
-
-    const wc= win.webContents
-    wc.openDevTools()
 }
 
 // Opens the index view
@@ -645,6 +643,7 @@ ipcMain.handle('open-loan-document', async (event, uuid) => {
         width: 1280,
         height: 720,
         title: 'Document',
+        autoHideMenuBar: true,
         webPreferences: {
             // preload: path.join(__dirname, 'preload.js'),
             contextIsolation: true,
@@ -816,6 +815,7 @@ ipcMain.on('print-report', (event, loan_id) => {
         width: 1280,
         height: 720,
         title: 'Report',
+        autoHideMenuBar: true,
         webPreferences: {
             preload: path.join(__dirname, 'preload.js'),
             contextIsolation: true,
