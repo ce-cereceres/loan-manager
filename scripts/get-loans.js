@@ -43,9 +43,9 @@ document.addEventListener('DOMContentLoaded', async () => {
                 data: 'is_closed',
                 render: function(data, type) {
                     if (data === 0) {
-                        return 'Active';
+                        return '<span class="badge bg-success">Active</span>';
                     } else if (data === 1) {
-                        return 'Closed';
+                        return '<span class="badge bg-danger">Closed</span>';
                     } else {
                         return 'Undefined';
                     }
@@ -53,6 +53,10 @@ document.addEventListener('DOMContentLoaded', async () => {
             },
             {
                 data: 'start_date',
+                render: function(data, type) {
+                    const startDateString = new Date(data).toLocaleString();
+                    return startDateString;
+                }
             },
             {
                 data: 'finish_date',
@@ -60,7 +64,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                     if (data === null) {
                         return 'Not finished';
                     }
-                    return data;
+                    const finishDateString = new Date(data).toLocaleString();
+                    return finishDateString;
                 }
             },
             {
